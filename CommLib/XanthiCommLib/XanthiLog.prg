@@ -9,56 +9,36 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.IO
+USING NLog
 
 BEGIN NAMESPACE XanthiCommLib
 
-	/// <summary>
-	/// The XanthiLog class.
-	/// </summary>
-	ABSTRACT CLASS XanthiLog
+	PUBLIC STATIC CLASS XanthiLog
 		
-	PUBLIC ABSTRACT METHOD Log( message AS STRING ) AS VOID
+	PRIVATE STATIC xanthiLog := NULL AS NLog.Logger
 		
-	PUBLIC ABSTRACT METHOD Clear() AS VOID
-		
-		ABSTRACT PROPERTY Text AS STRING GET 
-		
-		OPERATOR+(lhs AS XanthiLog, rhs AS STRING) AS XanthiLog
-			lhs:Log(rhs)
-			RETURN lhs
+		PUBLIC STATIC PROPERTY Logger AS NLog.Logger
+			GET
+				IF ( xanthiLog == NULL )
+					// Create the Default Config
+					VAR config := NLog.Config.LoggingConfiguration{}
+					// Targets where to log to: File and Console
+					VAR logfile := NLog.Targets.FileTarget{"logfile"} { FileName = "XanthiLogger.log" }
+					// Rules for mapping loggers to targets            
+					config:AddRule(LogLevel.Trace, LogLevel.Fatal, logfile)
+					// Apply config           
+					NLog.LogManager:Configuration := config
+					//
+					XanthiLog.xanthiLog := NLog.LogManager.GetCurrentClassLogger()
+				ENDIF
+				RETURN XanthiLog.xanthiLog
+			END GET
 			
-		END CLASS
-		
-		
-		
-		
-	/// <summary>
-	/// File logger class.
-	/// </summary>
-	CLASS XanthiFileLogger INHERIT XanthiLog
-		
-		PROPERTY FileName AS STRING AUTO
-		
-		CONSTRUCTOR( file AS STRING )
-			SELF:fileName := file
-			IF File.Exists( file )
-				File.Delete( file )
-			ENDIF
-		
-		PUBLIC OVERRIDE METHOD Log( message AS STRING ) AS VOID
-			BEGIN USING VAR sw := StreamWriter{ SELF:fileName, TRUE }
-				sw:Write(message)
-				sw:Close()
-			END USING
-		RETURN
-		
-		PUBLIC OVERRIDE METHOD Clear() AS VOID
-			IF File.Exists( SELF:fileName )
-				File.Delete( SELF:fileName )
-			ENDIF
-		RETURN
-		
-		PROPERTY Text AS STRING GET File.ReadAllText( SELF:FileName )
+			SET 
+				XanthiLog.xanthiLog = VALUE
+			END SET
+			
+		END PROPERTY 
 		
 	END CLASS
 	
