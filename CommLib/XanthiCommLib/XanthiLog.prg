@@ -15,27 +15,28 @@ BEGIN NAMESPACE XanthiCommLib
 
 	PUBLIC STATIC CLASS XanthiLog
 		
-	PRIVATE STATIC xanthiLog := NULL AS NLog.Logger
+	PRIVATE STATIC xanthiLogger := NULL AS NLog.Logger
 		
 		PUBLIC STATIC PROPERTY Logger AS NLog.Logger
 			GET
-				IF ( xanthiLog == NULL )
+				IF ( xanthiLogger == NULL )
 					// Create the Default Config
 					VAR config := NLog.Config.LoggingConfiguration{}
 					// Targets where to log to: File and Console
-					VAR logfile := NLog.Targets.FileTarget{"logfile"} { FileName = "XanthiLogger.log" }
+					VAR logfile := NLog.Targets.FileTarget{"logfile"} { FileName := "XanthiLogger.log" }
 					// Rules for mapping loggers to targets            
 					config:AddRule(LogLevel.Trace, LogLevel.Fatal, logfile)
 					// Apply config           
 					NLog.LogManager:Configuration := config
 					//
-					XanthiLog.xanthiLog := NLog.LogManager.GetCurrentClassLogger()
+
+					XanthiLog.xanthiLogger := NLog.LogManager.GetCurrentClassLogger()
 				ENDIF
-				RETURN XanthiLog.xanthiLog
+				RETURN XanthiLog.xanthiLogger
 			END GET
 			
 			SET 
-				XanthiLog.xanthiLog = VALUE
+				XanthiLog.xanthiLogger := VALUE
 			END SET
 			
 		END PROPERTY 

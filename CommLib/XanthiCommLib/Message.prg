@@ -70,7 +70,7 @@ BEGIN NAMESPACE XanthiCommLib
 		/// </summary>
 		STATIC METHOD DeSerializeBinary( byteArray AS BYTE[] ) AS Message
 			LOCAL msg AS Message
-			VAR ms := MemoryStream{}
+			VAR ms := MemoryStream{byteArray}
 			BEGIN USING VAR reader := BsonDataReader{ms}
 				//
 				VAR serializer := JsonSerializer{}
@@ -85,6 +85,17 @@ BEGIN NAMESPACE XanthiCommLib
 		STATIC METHOD DeSerializeString( json AS STRING ) AS Message
 			LOCAL msg AS Message
 			msg := JSonConvert.DeserializeObject<Message>( json )
+			//
+		RETURN msg
+
+		STATIC METHOD DeSerializeString( byteArray AS BYTE[] ) AS Message
+			LOCAL msg AS Message
+			VAR ms := MemoryStream{byteArray}
+			BEGIN USING VAR reader := StreamReader{ms}
+				//
+				VAR serializer := JsonSerializer{}
+				msg := (Message)serializer:DeSerialize(reader, TypeOf(Message) )
+			END USING
 			//
 		RETURN msg
 		
