@@ -13,7 +13,7 @@ BEGIN NAMESPACE XanthiClientTest
     
     Application.EnableVisualStyles()
     Application.SetCompatibleTextRenderingDefault( FALSE )
-    Application.Run( Form1{} )
+    Application.Run( MainWindow{} )
    
     RETURN
 	

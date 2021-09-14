@@ -25,6 +25,11 @@ BEGIN NAMESPACE XanthiCommLib
 		MEMBER RowGet
 		
 	END ENUM
+
+	ENUM ServerInfo
+		MEMBER Port := 8889
+		MEMBER ReadTimeOut := 10000
+	END ENUM
 	
 	
 	/// <summary>
@@ -36,12 +41,15 @@ BEGIN NAMESPACE XanthiCommLib
 		PROPERTY Code AS INT AUTO
 		
 		PROPERTY Command AS INT AUTO
+
+		PROPERTY SessionID AS INT AUTO
 		
 		PROPERTY PayLoad AS STRING AUTO
 		
 		CONSTRUCTOR() STRICT
 			SELF:Code := CodeValue.Ok
 			SELF:Command := CommandValue.None
+			SELF:SessionID := -1
 			RETURN
 		
 		/// <summary>

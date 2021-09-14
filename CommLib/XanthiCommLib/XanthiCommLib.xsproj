@@ -45,12 +45,12 @@
       <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <Name>Newtonsoft.Json</Name>
       <AssemblyName>Newtonsoft.Json.dll</AssemblyName>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <Name>Newtonsoft.Json.Bson</Name>
@@ -100,9 +100,14 @@
     <Reference Include="XSharp.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientDataSession.prg" />
+    <Compile Include="CommClient.prg" />
     <Compile Include="CommServerClient.prg" />
     <Compile Include="CommServer.prg" />
-    <Compile Include="DataSession.prg" />
+    <Compile Include="CommServerEvent.prg" />
+    <Compile Include="CommTools.prg" />
+    <Compile Include="ServerDataSession.prg" />
+    <Compile Include="FabRDD.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

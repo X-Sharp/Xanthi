@@ -11,11 +11,12 @@ USING System.Diagnostics
 USING System.Net
 USING System.Net.Sockets
 USING System.Threading
+USING System.Threading.Tasks
 
 BEGIN NAMESPACE XanthiCommLib
 
-	PUBLIC DELEGATE  CommClientEvent( sender AS CommServer, clt AS CommServerClient) AS VOID
-		
+	
+	
 	PUBLIC CLASS CommServer
 		
 		
@@ -25,13 +26,12 @@ BEGIN NAMESPACE XanthiCommLib
 		//PRIVATE dispatchingThread AS Thread
 		
 	PRIVATE accessSessionsMutex AS Mutex
-	PRIVATE accessClientsMutex AS Mutex
 		
 		//PRIVATE messageEventFlag AS AutoResetEvent
 		
 	PRIVATE quitEventFlag AS AutoResetEvent
 		
-	PRIVATE isRunning AS LOGIC
+	PRIVATE _isRunning AS LOGIC
 		
 	PRIVATE ep AS IPEndPoint
 		
@@ -42,12 +42,12 @@ BEGIN NAMESPACE XanthiCommLib
 		// running Clients
 	PRIVATE clients AS List<CommServerClient>
 		// opened DataSessions
-	PRIVATE sessions AS List<DataSession>
+	PRIVATE sessions AS List<ServerDataSession>
 		
 		// CallBack ?
-	PUBLIC OnClientAccept AS CommClientEvent
+	PUBLIC EVENT OnClientAccept AS EventHandler<CommServerEventArgs>
 		// CallBack ?
-	PUBLIC OnClientClose AS CommClientEvent
+	PUBLIC EVENT OnClientClose AS EventHandler<CommServerEventArgs>
 		
 		/// <summary>
 		/// Create a Comm Server Object
@@ -71,13 +71,10 @@ BEGIN NAMESPACE XanthiCommLib
 								THROW Exception{"We need 4 blocks in an IP Address"}
 							ENDIF
 							elts := BYTE[]{ 4 }
-							//Init
-							i := 0
-							DO WHILE i < 4
-								elts[i] := Convert.ToByte(elements[i])
-								//Iterators
-								i++
-							ENDDO
+							i := 1
+							FOREACH ipField AS STRING IN elements
+								elts[i++] := Convert.ToByte(ipField)
+							NEXT
 							ipadd := IPAddress{elts}
 						SELF:ep := IPEndPoint{ipadd, port}
 					ELSEIF netAddress == NULL
@@ -102,7 +99,8 @@ BEGIN NAMESPACE XanthiCommLib
 		/// <param name="port">Server port</param>
 		PUBLIC CONSTRUCTOR(netAddress AS IPAddress, port AS LONG )
 			TRY
-				SELF:ep := IPEndPoint{netAddress, port}
+					SELF:ep := IPEndPoint{netAddress, port}
+				SELF:InitServer()
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommServer : Constructor, " + e.Message)
 			END TRY
@@ -116,7 +114,8 @@ BEGIN NAMESPACE XanthiCommLib
 		/// </param>
 		PUBLIC CONSTRUCTOR(netAddress AS IPEndPoint )
 			TRY
-				SELF:ep := netAddress
+					SELF:ep := netAddress
+				SELF:InitServer()
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommServer : Constructor, " + e.Message)
 			END TRY
@@ -126,15 +125,16 @@ BEGIN NAMESPACE XanthiCommLib
 		PRIVATE METHOD InitServer() AS VOID
 			TRY
 					SELF:listener := TcpListener{SELF:ep}
-					SELF:isRunning := FALSE
+					SELF:_isRunning := FALSE
 					SELF:accessSessionsMutex := Mutex{}
-					SELF:accessClientsMutex := Mutex{}
 					//SELF:messageEventFlag := AutoResetEvent{ FALSE}
 				SELF:quitEventFlag := AutoResetEvent{ FALSE}
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommServer : InitServer, " + e.Message)
 			END TRY
 		RETURN
+		
+		PUBLIC PROPERTY IPAddress AS STRING GET ep:Address:ToString()
 		
 		/// <summary>
 		/// Start the Comm Server
@@ -181,6 +181,8 @@ BEGIN NAMESPACE XanthiCommLib
 		SELF:accessClientsMutex:ReleaseMutex()
 		*/
 		
+		PROPERTY IsRunning AS LOGIC GET SELF:_isRunning
+		
 		
 		/// <summary>
 		/// listening to All incoming Connection
@@ -194,7 +196,7 @@ BEGIN NAMESPACE XanthiCommLib
 			// Start listening for client requests.
 			SELF:listener:Start()
 			
-			SELF:isRunning := TRUE
+			SELF:_isRunning := TRUE
 			SELF:autoInc := 0
 			// Please, run forever...
 			DO WHILE TRUE
@@ -203,65 +205,93 @@ BEGIN NAMESPACE XanthiCommLib
 					// We are creating a CommClient with the accepted TcpConnection
 					clientNetwork := CommServerClient{client}
 					clientNetwork:AccessSessions := SELF:accessSessionsMutex
-					clientNetwork:AccessClients := SELF:accessClientsMutex
 					//clientNetwork:Messages := SELF:messages
 					//clientNetwork:messageEventFlag := SELF:messageEventFlag
 					clientNetwork:Server := SELF
 					clientNetwork:Start()
 					clientNetwork:Id := SELF:autoInc++
 					// Add the current Client to the list of running Clients
-					SELF:accessClientsMutex:WaitOne()
-					SELF:clients:Add(clientNetwork)
-					SELF:accessClientsMutex:ReleaseMutex()
+					BEGIN LOCK clientNetwork
+						SELF:clients:Add(clientNetwork)
+					END LOCK
 					//
 					// Need some CallBack ?
 					IF SELF:OnClientAccept != NULL
-						SELF:OnClientAccept(SELF, clientNetwork)
+						VAR args := CommServerEventArgs{}
+						args:Client := clientNetwork
+						SELF:OnClientAccept(SELF, args)
 					ENDIF
 					END WHILE
-				SELF:isRunning := FALSE
+				
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommServer : Listening, " + e.Message)
+			FINALLY
+				SELF:_isRunning := FALSE
 		END TRY
 		
 		/// <summary>
 		/// Stop the Server
 		/// </summary>
 		PUBLIC METHOD Stop() AS VOID
+			LOCAL clt AS CommServerClient
+			LOCAL length AS INT
 			IF SELF:isRunning
+				// Put this in a Thread/Task to avoid a DeadLock in the Stop Method of the Client
+				VAR onStop := Task.Run( {  ;
+				=> ;
 				// This will force the Listener to exit the blocking AcceptTcpClient
 				SELF:listener:Stop()
+				BEGIN LOCK clients
+					length := SELF:clients:Count
+				END LOCK
+				DO WHILE ( length > 0 )
+					BEGIN LOCK clients
+						clt := SELF:clients[0]
+					END LOCK
+					//
+					clt:Stop()
+					BEGIN LOCK clients
+						length := SELF:clients:Count
+					END LOCK
+				ENDDO
 				// Inform all Clients that they MUST leave....
-				SELF:quitEventFlag:@@Set()
-		ENDIF
+				SELF:quitEventFlag:@@Set() // UnUsed currently
+				} )
+				//
+			ENDIF
+		RETURN 
 		
 		
 		PUBLIC METHOD RemoveClient(id AS LONG ) AS VOID
 			LOCAL clt AS CommServerClient
 			// Single Acces to the Client list (Maybe we could use Begin Lock ?)
-			SELF:accessClientsMutex:WaitOne()
-			// Search for the CommServerClient object in the list
-			clt := SELF:clients:Find({x AS CommServerClient => x:Id == id})
-			IF clt != NULL
-				// Remove it
-				SELF:clients:Remove(clt)
-			ENDIF
-			// And free access to the list
-			SELF:accessClientsMutex:ReleaseMutex()
+			BEGIN LOCK clients
+				// Search for the CommServerClient object in the list
+				clt := SELF:clients:Find({x AS CommServerClient => x:Id == id})
+				IF clt != NULL
+					// Remove it
+					SELF:clients:Remove(clt)
+				ENDIF
+				// And free access to the list
+			END LOCK
 			// Doesn't exist ?
 			IF clt == NULL
 				RETURN
-			ENDIF
+		ENDIF
+		
+		INTERNAL METHOD DoClientClose(clt AS CommServerClient) AS VOID
 			TRY
 					// Do we have a CallBack method ?
 					IF SELF:OnClientClose != NULL
-						SELF:OnClientClose(SELF, clt)
-					ENDIF
-				
+						VAR args := CommServerEventArgs{}
+						args:Client := clt
+						// 
+						SELF:OnClientClose(SELF, args)
+				ENDIF
 			CATCH e AS Exception
-				XanthiLog.Logger:Error("CommServer : RemoveClient, " + e.Message)
-		END TRY
-		
+				XanthiLog.Logger:Error("CommServer : DoClientClose, " + e.Message)
+			END TRY
+		RETURN
 		
 	END CLASS
 	
