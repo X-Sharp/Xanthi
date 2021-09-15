@@ -30,6 +30,21 @@ BEGIN NAMESPACE XanthiCommLib
 		MEMBER Port := 8889
 		MEMBER ReadTimeOut := 10000
 	END ENUM
+
+	PUBLIC DELEGATE  CommClientMessageHandler(sender AS System.Object, e AS CommClientMessageArgs) AS VOID
+	
+		/// <summary>
+		/// The CommServerEvent class.
+	/// </summary>
+	CLASS CommClientMessageArgs INHERIT EventArgs
+	
+	PUBLIC PROPERTY Client AS CommServerClient AUTO
+	PUBLIC PROPERTY Message AS Message AUTO
+	
+	CONSTRUCTOR()
+	RETURN
+	
+END CLASS
 	
 	
 	/// <summary>
@@ -106,6 +121,9 @@ BEGIN NAMESPACE XanthiCommLib
 			END USING
 			//
 		RETURN msg
+
+		PUBLIC METHOD ToString() AS STRING
+		RETURN SELF:Code:ToString() + ", " + SELF:Command:ToString() + "," + SELF:PayLoad
 		
 	END CLASS
 END NAMESPACE

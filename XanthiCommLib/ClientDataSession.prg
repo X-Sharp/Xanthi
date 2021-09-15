@@ -15,8 +15,13 @@ BEGIN NAMESPACE XanthiCommLib
 	/// The ClientDataSession class.
 	/// </summary>
 	CLASS ClientDataSession
+		// The IPAddress linked to this DataSession
+		PROPERTY IPAddress AS STRING AUTO
+		// The wanted FileName
 		PROPERTY FileName AS STRING AUTO
+		// The real FileName
 		PROPERTY RealFileName AS STRING AUTO
+		// Session ID
 		PROPERTY Id AS INT AUTO
 		
 		

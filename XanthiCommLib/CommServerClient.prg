@@ -47,6 +47,9 @@ BEGIN NAMESPACE XanthiCommLib
 		// Retrieve the IP address of the Client (The one that started the connection)
 		PUBLIC PROPERTY IPAddress AS STRING GET SELF:ep:ToString()
 		
+		// CallBack ?
+	PUBLIC EVENT OnMessage AS EventHandler<CommClientMessageArgs>
+		
 		INTERNAL CONSTRUCTOR(client AS TcpClient )
 			SELF:tcpClient := client
 			SELF:ep := (IPEndPoint) tcpClient:Client:RemoteEndPoint
@@ -98,6 +101,9 @@ BEGIN NAMESPACE XanthiCommLib
 						TRY
 								// 4 bytes == 32 bits unsigned value == DWORD
 							bytesRead := SELF:clientStream:Read(header, 0, 4)
+						CATCH err AS System.IO.IOException
+							XanthiLog.Logger:Info("CommServerClient : ReadData Stream Closed, " + err.Message)
+							EXIT
 						CATCH e AS Exception
 							XanthiLog.Logger:Error("CommServerClient : ReadData Header, " + e.Message)
 						END TRY
@@ -112,6 +118,9 @@ BEGIN NAMESPACE XanthiCommLib
 						TRY
 								// Now, read the Data
 							bytesRead := SELF:clientStream:Read(msgBytes, 0, (INT)msgSize)
+						CATCH err AS System.IO.IOException
+							XanthiLog.Logger:Info("CommServerClient : ReadData Stream Closed, " + err.Message)
+							EXIT
 						CATCH e AS Exception
 							XanthiLog.Logger:Error("CommServerClient : ReadData Error reading data bytes, " + e.Message)
 						END TRY
@@ -125,10 +134,23 @@ BEGIN NAMESPACE XanthiCommLib
 						ELSE
 							msg := Message.DeSerializeString( msgBytes )
 						ENDIF
+						// Message CallBack
+						SELF:DoOnMessage( msg )
 						// Ok, now Process.....
 						XanthiLog.Logger:Info("CommServerClient : Process message," + msg:Command:ToString() + "," + msg:PayLoad )
-						SELF:ProcessMessage( msg )
-						
+						VAR reply := SELF:ProcessMessage( msg )
+						IF reply != NULL
+							// Write Back
+							IF SELF:UseBSON
+									VAR bsonBytes := msg:SerializeBinary( )
+								SELF:WriteData( bsonBytes)
+							ELSE
+								VAR jsonString := msg.SerializeString( )
+								SELF:WriteData(jsonString)
+							ENDIF
+							// Just to be sure...
+							SELF:clientStream:Flush()
+						ENDIF
 						// Keep the Connection open ?
 						IF !SELF:KeepAlive
 							EXIT
@@ -142,7 +164,7 @@ BEGIN NAMESPACE XanthiCommLib
 						// We are out of the receive and process
 						SELF:running := FALSE
 						// Indicate we are closing
-						SELF:Server:DoClientClose(SELF) 
+						SELF:Server:DoOnClientClose(SELF) 
 						// Then remove the reference to this Client in the Server Clients list
 					SELF:Server:RemoveClient(SELF:Id)
 				CATCH e AS Exception
@@ -179,9 +201,26 @@ BEGIN NAMESPACE XanthiCommLib
 			END TRY
 		RETURN
 		
+		
+		INTERNAL METHOD DoOnMessage(msg AS Message) AS VOID
+			TRY
+					// Do we have a CallBack method ?
+					IF SELF:OnMessage != NULL
+						VAR args := CommClientMessageArgs{}
+						args:Client := SELF
+						args:Message := msg
+						// 
+						SELF:OnMessage(SELF, args)
+				ENDIF
+			CATCH e AS Exception
+				XanthiLog.Logger:Error("CommServer : DoClientClose, " + e.Message)
+			END TRY
+		RETURN
+		
 		PRIVATE METHOD ProcessMessage( msg AS Message ) AS Message
 			XanthiLog.Logger:Error("CommServerClient : Processing Command, " + msg:Command:ToString())
-		RETURN NULL
+		RETURN msg
+		
 		
 	END CLASS
 	

@@ -2,18 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <Name>XanthiClientTest</Name>
-    <ProjectGuid>a318b603-89bd-4e7d-86bd-a02259d82544</ProjectGuid>
+    <Name>XanthiServerTest</Name>
+    <ProjectGuid>6afbf951-0bb0-424b-ba5a-1047fb660880</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XanthiClientTest</RootNamespace>
-    <AssemblyName>XanthiClientTest</AssemblyName>
+    <RootNamespace>XanthiServerTest</RootNamespace>
+    <AssemblyName>XanthiServerTest</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <vo15>false</vo15>
-    <OutputName>XanthiClientTest</OutputName>
+    <OutputName>XanthiServerTest</OutputName>
     <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
@@ -41,9 +41,9 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -60,12 +60,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ServerManager.Designer.prg">
-      <DependentUpon>ServerManager.prg</DependentUpon>
-    </Compile>
-    <Compile Include="ServerManager.prg">
-      <SubType>Form</SubType>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -89,11 +83,6 @@
       <Project>{e18c2d95-9164-487c-aedf-8d58ec529c1f}</Project>
       <Private>True</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ServerManager.resx">
-      <DependentUpon>ServerManager.prg</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

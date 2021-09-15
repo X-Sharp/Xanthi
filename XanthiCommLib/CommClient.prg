@@ -125,7 +125,7 @@ BEGIN NAMESPACE XanthiCommLib
 			ENDIF
 		RETURN
 		
-		PUBLIC METHOD WaitReply() AS Message
+		PUBLIC METHOD WaitReply( timeOut := (INT)ServerInfo.ReadTimeOut AS INT) AS Message
 			LOCAL msg := NULL AS Message
 			//
 			TRY
@@ -138,7 +138,7 @@ BEGIN NAMESPACE XanthiCommLib
 							END LOCK
 							IF ( msg == NULL )
 								//
-								SELF:clientStream:ReadTimeout := (INT)ServerInfo.ReadTimeOut
+								SELF:clientStream:ReadTimeout := timeOut
 								SELF:ReadData()
 								BEGIN LOCK SELF:messages
 									IF SELF:messages:Count > 0
