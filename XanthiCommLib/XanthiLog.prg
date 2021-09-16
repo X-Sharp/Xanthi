@@ -17,19 +17,21 @@ BEGIN NAMESPACE XanthiCommLib
 		
 	PRIVATE STATIC xanthiLogger := NULL AS NLog.Logger
 		
+	PRIVATE STATIC logFile := NULL AS STRING
+		
 		PUBLIC STATIC PROPERTY Logger AS NLog.Logger
 			GET
 				IF ( xanthiLogger == NULL )
 					// Create the Default Config
 					VAR config := NLog.Config.LoggingConfiguration{}
 					// Targets where to log to: File and Console
-					VAR logfile := NLog.Targets.FileTarget{"logfile"} { FileName := "XanthiLogger.log" }
+					VAR logfile := NLog.Targets.FileTarget{"logfile"} { FileName := XanthiLog.FileName }
 					// Rules for mapping loggers to targets            
 					config:AddRule(LogLevel.Trace, LogLevel.Fatal, logfile)
 					// Apply config           
 					NLog.LogManager:Configuration := config
 					//
-
+					
 					XanthiLog.xanthiLogger := NLog.LogManager.GetCurrentClassLogger()
 				ENDIF
 				RETURN XanthiLog.xanthiLogger
@@ -40,6 +42,20 @@ BEGIN NAMESPACE XanthiCommLib
 			END SET
 			
 		END PROPERTY 
+		
+		PUBLIC STATIC PROPERTY FileName AS STRING
+			GET
+				IF ( logFile == NULL )
+					logFile := "XanthiLogger.log"
+				ENDIF
+				RETURN logFile
+			END GET
+			
+			SET
+				logFile := VALUE
+			END SET
+		END PROPERTY
+		
 		
 	END CLASS
 	

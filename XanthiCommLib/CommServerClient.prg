@@ -190,10 +190,14 @@ BEGIN NAMESPACE XanthiCommLib
 			END TRY
 		RETURN
 		
+				// Write the raw Data
 		PRIVATE METHOD WriteData(buffer AS BYTE[] ) AS VOID
 			//
 			TRY
 					IF SELF:running
+					// First send the size (as a UINT32)
+							VAR msgSize := BitConverter.GetBytes( (UINT32)buffer:Length )
+							SELF:clientStream:Write(msgSize, 0, msgSize:Length)
 						SELF:clientStream:Write(buffer, 0, buffer:Length)
 				ENDIF
 			CATCH e AS Exception

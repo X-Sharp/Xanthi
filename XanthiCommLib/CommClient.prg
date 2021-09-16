@@ -154,6 +154,7 @@ BEGIN NAMESPACE XanthiCommLib
 			END TRY
 		RETURN msg
 		
+		// Write a Message
 		PRIVATE METHOD WriteData(msg AS STRING ) AS VOID
 			LOCAL encoder AS ASCIIEncoding
 			LOCAL buffer AS BYTE[]
@@ -168,6 +169,7 @@ BEGIN NAMESPACE XanthiCommLib
 			
 		RETURN
 		
+		// Write the raw Data
 		PRIVATE METHOD WriteData(buffer AS BYTE[] ) AS VOID
 			//
 			TRY
