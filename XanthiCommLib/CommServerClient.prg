@@ -18,7 +18,7 @@ BEGIN NAMESPACE XanthiCommLib
 	/// The CommServerClient class.
 	/// This is the client communication Class, used on the Server-Side
 	/// </summary>
-	CLASS CommServerClient
+	PARTIAL CLASS CommServerClient
 		
 		
 		
@@ -220,11 +220,6 @@ BEGIN NAMESPACE XanthiCommLib
 				XanthiLog.Logger:Error("CommServer : DoClientClose, " + e.Message)
 			END TRY
 		RETURN
-		
-		PRIVATE METHOD ProcessMessage( msg AS Message ) AS Message
-			XanthiLog.Logger:Error("CommServerClient : Processing Command, " + msg:Command:ToString())
-		RETURN msg
-		
 		
 	END CLASS
 	
