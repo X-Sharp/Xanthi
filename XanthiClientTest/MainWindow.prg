@@ -26,7 +26,7 @@ BEGIN NAMESPACE XanthiClientTest
 			//
 			msg := XanthiCommLib.Message{}
 			int32.TryParse( SELF:tbCode:Text, OUT number )
-			msg:Code := number
+			msg:Code := (CodeValue)number
 			int32.TryParse(SELF:tbCommand:Text, OUT number)
 			msg:Command := number
 			msg:PayLoad := SELF:tbPayLoad:Text
@@ -75,7 +75,7 @@ BEGIN NAMESPACE XanthiClientTest
 			IF howMany > 1
 				msg := XanthiCommLib.Message{}
 				int32.TryParse( SELF:tbCode:Text, OUT number )
-				msg:Code := number
+				msg:Code := (CodeValue)number
 				int32.TryParse(SELF:tbCommand:Text, OUT number)
 				msg:Command := number
 				msg:PayLoad := SELF:tbPayLoad:Text

@@ -10,9 +10,23 @@ BEGIN NAMESPACE XanthiCommLib
 
 
 	ENUM CodeValue
-		MEMBER Ok
-		MEMBER Error
-		MEMBER Warning
+		MEMBER Ok := 200
+		MEMBER NoContent := 204
+		MEMBER BadRequest := 400
+		MEMBER Unauthorized := 401
+		MEMBER PaymentRequired := 402
+		MEMBER Forbidden := 403
+		MEMBER NotFound := 404
+		MEMBER MethodNotAllowed := 405
+		MEMBER RequestTimeout := 408
+		MEMBER Conflict := 409
+		MEMBER PayloadTooLArge := 413
+		MEMBER UpgradeRequired := 426
+		MEMBER TooManyRequests := 429
+		MEMBER InternalServerError := 500
+		MEMBER NotImplemented := 501
+		MEMBER ServiceUnavailable := 503
+
 	END ENUM
 	
 	ENUM CommandValue
@@ -53,7 +67,7 @@ END CLASS
 	CLASS Message
 		
 		// 
-		PROPERTY Code AS INT AUTO
+		PROPERTY Code AS CodeValue AUTO
 		
 		PROPERTY Command AS INT AUTO
 
@@ -123,7 +137,7 @@ END CLASS
 		RETURN msg
 
 		PUBLIC METHOD ToString() AS STRING
-		RETURN SELF:Code:ToString() + ", " + SELF:Command:ToString() + "," + SELF:PayLoad
+		RETURN SELF:SessionID:ToString() + ", " + SELF:Code:ToString() + ", " + SELF:Command:ToString() + "," + SELF:PayLoad
 		
 	END CLASS
 END NAMESPACE

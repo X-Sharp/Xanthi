@@ -22,7 +22,12 @@ BEGIN NAMESPACE XanthiCommLib
 	
 		PRIVATE METHOD ProcessMessage( msg AS Message ) AS Message
 			XanthiLog.Logger:Error("CommServerClient : Processing Command, " + msg:Command:ToString())
-		RETURN msg
+			LOCAL reply AS Message
+			//
+			reply := Message{}
+			reply:Code := CodeValue.NotImplemented
+			//
+		RETURN reply
 		
 		
 	END CLASS

@@ -137,15 +137,16 @@ BEGIN NAMESPACE XanthiCommLib
 						// Message CallBack
 						SELF:DoOnMessage( msg )
 						// Ok, now Process.....
-						XanthiLog.Logger:Info("CommServerClient : Process message," + msg:Command:ToString() + "," + msg:PayLoad )
+						XanthiLog.Logger:Info("CommServerClient : Process message," + msg:ToString() )
 						VAR reply := SELF:ProcessMessage( msg )
 						IF reply != NULL
+							XanthiLog.Logger:Info("CommServerClient : Replying message," + reply:ToString() )
 							// Write Back
 							IF SELF:UseBSON
-									VAR bsonBytes := msg:SerializeBinary( )
+									VAR bsonBytes := reply.SerializeBinary( )
 								SELF:WriteData( bsonBytes)
 							ELSE
-								VAR jsonString := msg.SerializeString( )
+								VAR jsonString := reply.SerializeString( )
 								SELF:WriteData(jsonString)
 							ENDIF
 							// Just to be sure...
