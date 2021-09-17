@@ -62,8 +62,10 @@ BEGIN NAMESPACE XanthiCommLib
 		
 		// Start the Reading Thread
 		PUBLIC METHOD Start() AS VOID
-			SELF:readingThread := Thread{ SELF:ReadData }
-			SELF:readingThread:Start()
+			IF !SELF:running
+				SELF:readingThread := Thread{ SELF:ReadData }
+				SELF:readingThread:Start()
+			ENDIF
 		RETURN
 		
 		// Close the underlying Stream, and stop the ReadData thread
@@ -191,14 +193,14 @@ BEGIN NAMESPACE XanthiCommLib
 			END TRY
 		RETURN
 		
-				// Write the raw Data
+		// Write the raw Data
 		PRIVATE METHOD WriteData(buffer AS BYTE[] ) AS VOID
 			//
 			TRY
 					IF SELF:running
-					// First send the size (as a UINT32)
-							VAR msgSize := BitConverter.GetBytes( (UINT32)buffer:Length )
-							SELF:clientStream:Write(msgSize, 0, msgSize:Length)
+						// First send the size (as a UINT32)
+						VAR msgSize := BitConverter.GetBytes( (UINT32)buffer:Length )
+						SELF:clientStream:Write(msgSize, 0, msgSize:Length)
 						SELF:clientStream:Write(buffer, 0, buffer:Length)
 				ENDIF
 			CATCH e AS Exception

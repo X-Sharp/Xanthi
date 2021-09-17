@@ -31,7 +31,6 @@ BEGIN NAMESPACE XanthiCommLib
 					// Apply config           
 					NLog.LogManager:Configuration := config
 					//
-					
 					XanthiLog.xanthiLogger := NLog.LogManager.GetCurrentClassLogger()
 				ENDIF
 				RETURN XanthiLog.xanthiLogger

@@ -146,43 +146,6 @@ BEGIN NAMESPACE XanthiCommLib
 			// The real listening Thread
 			SELF:listeningThread := Thread{SELF:listening}
 		SELF:listeningThread:Start()
-		// Dispatch thread???
-		//SELF:dispatchingThread := Thread{SELF:Dispatch}
-		//SELF:dispatchingThread:Start()
-		
-	/*
-	PRIVATE METHOD Dispatch() AS VOID
-	LOCAL attente AS WaitHandle[]
-	LOCAL who AS LONG
-	LOCAL msg AS Message
-	// Array with system Event to wait For
-	attente := <WaitHandle>{ SELF:messageEventFlag, SELF:quitEventFlag }
-	DO WHILE TRUE
-	who := WaitHandle.WaitAny(attente, -1)
-	IF who == 1
-	EXIT
-	ENDIF
-	SELF:accessMessagesMutex:WaitOne()
-	msg := NULL
-	DO WHILE SELF:messages:Count > 0
-	msg := SELF:messages:Pop()
-	SELF:accessClientsMutex:WaitOne()
-	FOREACH clt AS CommServerClient IN SELF:clients 
-	IF clt:Id != msg:Id
-	clt:Ecrire(msg:Data)
-	ENDIF
-	NEXT
-	SELF:accessClientsMutex:ReleaseMutex()
-	ENDDO
-	SELF:accessMessagesMutex:ReleaseMutex()
-	ENDDO
-	//
-	SELF:accessClientsMutex:WaitOne()
-	FOREACH clt2 AS ClientReseau IN SELF:clients 
-	clt2:Stop()
-	NEXT
-	SELF:accessClientsMutex:ReleaseMutex()
-	*/
 	
 	PROPERTY IsRunning AS LOGIC GET SELF:_isRunning
 	
@@ -265,7 +228,7 @@ BEGIN NAMESPACE XanthiCommLib
 	RETURN 
 	
 	
-	PUBLIC METHOD RemoveClient(id AS LONG ) AS VOID
+	INTERNAL METHOD RemoveClient(id AS LONG ) AS VOID
 		LOCAL clt AS CommServerClient
 		// Single Acces to the Client list (Maybe we could use Begin Lock ?)
 		BEGIN LOCK clients
