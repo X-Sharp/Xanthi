@@ -23,12 +23,18 @@ BEGIN NAMESPACE XanthiClientTest
 		PRIVATE METHOD buttonSend_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			LOCAL msg AS XanthiCommLib.Message
 			LOCAL number AS INT
+			LOCAL cmd AS CommandValue
+			LOCAL code AS CodeValue
 			//
 			msg := XanthiCommLib.Message{}
-			int32.TryParse( SELF:tbCode:Text, OUT number )
-			msg:Code := (CodeValue)number
-			int32.TryParse(SELF:tbCommand:Text, OUT number)
-			msg:Command := number
+			int32.TryParse( SELF:tbSessionID:Text, OUT number )
+			msg:SessionID := number
+			IF Enum.TryParse(SELF:comboCommand:Text, OUT cmd )
+				msg:Command := cmd
+			ENDIF
+			IF Enum.TryParse(SELF:comboCode:Text, OUT code )
+				msg:Code := Code
+			ENDIF
 			msg:PayLoad := SELF:tbPayLoad:Text
 			//
 			IF SendMessage( msg, (STRING) SELF:comboIPList:SelectedItem, (INT)SELF:portNumber:Value )
@@ -47,8 +53,9 @@ BEGIN NAMESPACE XanthiClientTest
 				msg := client:WaitReply()
 				IF msg != NULL
 					// Fill the Reply area
-					SELF:tbCodeReply:Text := msg:Code:ToString()
+					SELF:tbSessionIDReply:Text := msg:SessionID:ToString()
 					SELF:tbCommandReply:Text := msg:Command:ToString()
+					SELF:tbCodeReply:Text := msg:Code:ToString()
 					SELF:tbPayloadReply:Text := msg:PayLoad
 				ENDIF
 				client:Close()
@@ -65,19 +72,34 @@ BEGIN NAMESPACE XanthiClientTest
 			SELF:portNumber:Value := 12345
 			//
 			SELF:statusLabel:Text := ""
+			//
+			VAR commands := Enum.GetValues(TYPEOF(XanthiCommLib.CommandValue))
+			FOREACH VAR cmd IN commands
+				SELF:comboCommand:Items:Add( cmd:ToString() )
+			NEXT
+			VAR codes := Enum.GetValues(TYPEOF(XanthiCommLib.CodeValue))
+			FOREACH VAR code IN codes
+				SELF:comboCode:Items:Add( code:ToString() )
+			NEXT
 		RETURN
 		PRIVATE METHOD buttonMultiSend_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
 			LOCAL msg AS XanthiCommLib.Message
 			LOCAL number AS INT
 			LOCAL howMany AS INT
+			LOCAL cmd AS CommandValue
+			LOCAL code AS CodeValue
 			//
 			int32.TryParse( SELF:tbMulti:Text, OUT howMany )
 			IF howMany > 1
 				msg := XanthiCommLib.Message{}
-				int32.TryParse( SELF:tbCode:Text, OUT number )
-				msg:Code := (CodeValue)number
-				int32.TryParse(SELF:tbCommand:Text, OUT number)
-				msg:Command := number
+				int32.TryParse( SELF:tbSessionID:Text, OUT number )
+				msg:SessionID := number
+				IF Enum.TryParse(SELF:comboCommand:Text, OUT cmd )
+					msg:Command := cmd
+				ENDIF
+				IF Enum.TryParse(SELF:comboCode:Text, OUT code )
+					msg:Code := Code
+				ENDIF
 				msg:PayLoad := SELF:tbPayLoad:Text
 				//
 				VAR ip := (STRING) SELF:comboIPList:SelectedItem

@@ -65,14 +65,13 @@ END CLASS
 	/// Message class used to exchange informations, command, state, ...
 	/// </summary>	
 	CLASS Message
-		
-		// 
-		PROPERTY Code AS CodeValue AUTO
-		
-		PROPERTY Command AS INT AUTO
-
+		// The Session ID for this message
 		PROPERTY SessionID AS INT AUTO
-		
+		// The Command send by the message
+		PROPERTY Command AS CommandValue AUTO
+		// Parameter or Return Value
+		PROPERTY Code AS CodeValue AUTO
+		// The PayLoad for the current Command
 		PROPERTY PayLoad AS STRING AUTO
 		
 		CONSTRUCTOR() STRICT
@@ -137,7 +136,7 @@ END CLASS
 		RETURN msg
 
 		PUBLIC METHOD ToString() AS STRING
-		RETURN SELF:SessionID:ToString() + ", " + SELF:Code:ToString() + ", " + SELF:Command:ToString() + "," + SELF:PayLoad
+		RETURN SELF:SessionID:ToString() + ", "  + SELF:Command:ToString() + "," + SELF:Code:ToString() + ", " + SELF:PayLoad
 		
 	END CLASS
 END NAMESPACE

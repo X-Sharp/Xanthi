@@ -1,5 +1,46 @@
 ﻿## Xanthi Communication Library
 ___
+### Message
+The Message object is sent by the Client to the Server, and returned as a Reply
+
+**PROPERTY SessionID AS INT**  
+The Session ID for this message
+
+**PROPERTY Command AS INT**  
+The Command send by the message
+
+**PROPERTY Code AS CodeValue**  
+Parameter or Return code
+
+**PROPERTY PayLoad AS STRING**  
+The PayLoad for the current Command
+___
+
+### CommClient  
+The CommClient Class used to create a client Object to communicate with the CommServer
+
+
+**CONSTRUCTOR(remoteHost AS IPAddress, port AS LONG )**  
+**CONSTRUCTOR(remoteHost AS STRING , port AS LONG )**  
+**CONSTRUCTOR(remoteHost AS IPEndPoint )**  
+Create a CommClient Object, indicating the Server to connect to
+
+**METHOD Connect() AS LOGIC**  
+Try to Connect to the Server, Return TRUE is successfull
+
+**METHOD Close() AS LOGIC**  
+Close the current Client, Return TRUE is successfull
+
+**PROPERTY IsConnected AS LOGIC**  
+Indicate if the current Client is connected
+
+**METHOD WriteMessage( msg AS Message ) AS VOID**  
+Send a Message object to the Server
+
+**METHOD WaitReply( timeOut := (INT)ServerInfo.ReadTimeOut AS INT) AS Message**  
+Wait for the Server to send a reply Message, used after a WriteMessage.
+
+___
 ### CommServer
 The CommServer Class 
 
@@ -61,27 +102,4 @@ The Client Object
 **PROPERTY Message AS Message**  
 The Message Object  
 ___
-### CommClient  
-The CommClient Class used to create a client Object to communicate with the CommServer
-
-
-**CONSTRUCTOR(remoteHost AS IPAddress, port AS LONG )**  
-**CONSTRUCTOR(remoteHost AS STRING , port AS LONG )**  
-**CONSTRUCTOR(remoteHost AS IPEndPoint )**  
-Create a CommClient Object, indicating the Server to connect to
-
-**METHOD Connect() AS LOGIC**  
-Try to Connect to the Server, Return TRUE is successfull
-
-**METHOD Close() AS LOGIC**  
-Close the current Client, Return TRUE is successfull
-
-**PROPERTY IsConnected AS LOGIC**  
-Indicate if the current Client is connected
-
-**METHOD WriteMessage( msg AS Message ) AS VOID**  
-Send a Message object to the Server
-
-**METHOD WaitReply( timeOut := (INT)ServerInfo.ReadTimeOut AS INT) AS Message**  
-Wait for the Server to send a reply Message, used after a WriteMessage.
 
