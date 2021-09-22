@@ -17,6 +17,7 @@ BEGIN NAMESPACE XanthiServerTest
         INHERIT System.Windows.Forms.Form
         PRIVATE Server AS XanthiCommLib.CommServer
         PRIVATE connections AS INT
+        PRIVATE process AS ServerProcess
   
   PUBLIC CONSTRUCTOR()   STRICT//MainWindow
    InitializeComponent()
@@ -28,12 +29,15 @@ BEGIN NAMESPACE XanthiServerTest
    // Port number
    SELF:portNumber:Value := 12345
    connections := 0
+   SELF:process := ServerProcess{}
+   //
   RETURN
   PRIVATE METHOD buttonStart_Click(sender AS System.Object, e AS System.EventArgs) AS VOID STRICT
    SELF:Server := CommServer{ (STRING) SELF:comboIPList:SelectedItem, (INT)SELF:portNumber:Value }
    SELF:Server:OnClientAccept += System.EventHandler<CommServerEventArgs>{ SELF, @OnClientAccept() }
    SELF:Server:OnClientClose += System.EventHandler<CommServerEventArgs>{ SELF, @OnClientClose() }
-   SELF:Server:OnMessage += System.EventHandler<CommClientMessageArgs>{ SELF, @OnMessage() }
+   SELF:Server:OnMessageInfo += System.EventHandler<CommClientMessageArgs>{ SELF, @OnMessageInfo() }
+   SELF:Server:OnMessageProcess += System.EventHandler<CommClientMessageArgs>{ SELF:process, @OnMessageProcess() }
    SELF:buttonStop:Visible := TRUE
    SELF:buttonStart:Visible := FALSE
    SELF:listBoxClients:Items:Clear()
@@ -50,9 +54,9 @@ BEGIN NAMESPACE XanthiServerTest
    // Warning, we are in a Thread, not in the main GUI Thread
   SELF:Invoke((CommServerEventHandler)SELF:DoClientClose, <OBJECT> { sender, e })
   
-  PRIVATE METHOD OnMessage(sender AS System.Object, e AS CommClientMessageArgs) AS VOID STRICT
+  PRIVATE METHOD OnMessageInfo(sender AS System.Object, e AS CommClientMessageArgs) AS VOID STRICT
    // Warning, we are in a Thread, not in the main GUI Thread
-  SELF:Invoke((CommClientMessageHandler)SELF:DoClientMessage, <OBJECT> { sender, e })
+  SELF:Invoke((CommClientMessageHandler)SELF:DoClientMessageInfo, <OBJECT> { sender, e })
   
   PRIVATE METHOD DoClientAccept(sender AS System.Object, e AS CommServerEventArgs) AS VOID STRICT
   SELF:listBoxClients:Items:Add( ">> " + e:Client:IPAddress )
@@ -63,7 +67,7 @@ BEGIN NAMESPACE XanthiServerTest
   SELF:listBoxClients:Items:Add( "<< " + e:Client:IPAddress )
   
   
-  PRIVATE METHOD DoClientMessage(sender AS System.Object, e AS CommClientMessageArgs) AS VOID STRICT
+  PRIVATE METHOD DoClientMessageInfo(sender AS System.Object, e AS CommClientMessageArgs) AS VOID STRICT
    SELF:listBoxMessages:Items:Add( ">> " + e:Message:ToString() )
    SELF:labelMessages:Text := SELF:listBoxMessages:Items:Count:ToString()
   RETURN

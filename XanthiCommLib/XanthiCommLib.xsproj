@@ -104,11 +104,9 @@
     <Compile Include="CommClient.prg" />
     <Compile Include="CommServerClient.prg" />
     <Compile Include="CommServer.prg" />
-    <Compile Include="CommServerClient_Process.prg" />
     <Compile Include="CommServerEvent.prg" />
     <Compile Include="CommTools.prg" />
     <Compile Include="ServerDataSession.prg" />
-    <Compile Include="FabRDD.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>

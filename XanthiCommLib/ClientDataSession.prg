@@ -12,7 +12,7 @@ USING System.Text
 BEGIN NAMESPACE XanthiCommLib
 
 	/// <summary>
-	/// The ClientDataSession class.
+	/// The ClientDataSession class. UnUsed Currently
 	/// </summary>
 	CLASS ClientDataSession
 		// The IPAddress linked to this DataSession
@@ -23,6 +23,7 @@ BEGIN NAMESPACE XanthiCommLib
 		PROPERTY RealFileName AS STRING AUTO
 		// Session ID
 		PROPERTY Id AS INT AUTO
+		//
 		
 		
 		

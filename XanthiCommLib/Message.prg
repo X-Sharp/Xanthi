@@ -37,6 +37,7 @@ BEGIN NAMESPACE XanthiCommLib
 		MEMBER GoBottom
 		MEMBER FieldGet
 		MEMBER RowGet
+		MEMBER DbStruct
 		
 	END ENUM
 
@@ -66,7 +67,7 @@ END CLASS
 	/// </summary>	
 	CLASS Message
 		// The Session ID for this message
-		PROPERTY SessionID AS INT AUTO
+		PROPERTY SessionID AS UINT64 AUTO
 		// The Command send by the message
 		PROPERTY Command AS CommandValue AUTO
 		// Parameter or Return Value
@@ -77,7 +78,7 @@ END CLASS
 		CONSTRUCTOR() STRICT
 			SELF:Code := CodeValue.Ok
 			SELF:Command := CommandValue.None
-			SELF:SessionID := -1
+			SELF:SessionID := 0
 			RETURN
 		
 		/// <summary>

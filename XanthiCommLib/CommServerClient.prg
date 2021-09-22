@@ -39,16 +39,16 @@ BEGIN NAMESPACE XanthiCommLib
 		// Keep the Connection Open ?
 	PRIVATE KeepAlive AS LOGIC
 		
-		PUBLIC PROPERTY AccessSessions AS Mutex AUTO GET INTERNAL SET 
-		PUBLIC PROPERTY AccessClients AS Mutex AUTO GET INTERNAL SET 
-		
 		PUBLIC PROPERTY Server AS CommServer AUTO GET INTERNAL SET 
+		
+		
 		
 		// Retrieve the IP address of the Client (The one that started the connection)
 		PUBLIC PROPERTY IPAddress AS STRING GET SELF:ep:ToString()
 		
 		// CallBack ?
-	PUBLIC EVENT OnMessage AS EventHandler<CommClientMessageArgs>
+	PUBLIC EVENT OnMessageInfo AS EventHandler<CommClientMessageArgs>
+	PUBLIC EVENT OnMessageProcess AS EventHandler<CommClientMessageArgs>
 		
 		INTERNAL CONSTRUCTOR(client AS TcpClient )
 			SELF:tcpClient := client
@@ -137,10 +137,10 @@ BEGIN NAMESPACE XanthiCommLib
 							msg := Message.DeSerializeString( msgBytes )
 						ENDIF
 						// Message CallBack
-						SELF:DoOnMessage( msg )
+						SELF:DoOnMessageInfo( msg )
 						// Ok, now Process.....
 						XanthiLog.Logger:Info("CommServerClient : Process message," + msg:ToString() )
-						VAR reply := SELF:ProcessMessage( msg )
+						VAR reply := SELF:DoOnMessageProcess( msg )
 						IF reply != NULL
 							XanthiLog.Logger:Info("CommServerClient : Replying message," + reply:ToString() )
 							// Write Back
@@ -209,19 +209,47 @@ BEGIN NAMESPACE XanthiCommLib
 		RETURN
 		
 		
-		INTERNAL METHOD DoOnMessage(msg AS Message) AS VOID
+		INTERNAL METHOD DoOnMessageInfo(msg AS Message) AS VOID
 			TRY
 					// Do we have a CallBack method ?
-					IF SELF:OnMessage != NULL
+					IF SELF:OnMessageInfo != NULL
 						VAR args := CommClientMessageArgs{}
 						args:Client := SELF
 						args:Message := msg
 						// 
-						SELF:OnMessage(SELF, args)
+						SELF:OnMessageInfo(SELF, args)
 				ENDIF
 			CATCH e AS Exception
-				XanthiLog.Logger:Error("CommServer : DoClientClose, " + e.Message)
+				XanthiLog.Logger:Error("CommServer : DoOnMessageInfo, " + e.Message)
 			END TRY
+		RETURN
+		
+		PRIVATE METHOD DoOnMessageProcess( msg AS Message ) AS Message
+		LOCAL reply := NULL AS Message
+			TRY
+					// Do we have a CallBack method ?
+					IF SELF:OnMessageProcess != NULL
+						VAR args := CommClientMessageArgs{}
+						args:Client := SELF
+						args:Message := msg
+						// 
+						SELF:OnMessageProcess(SELF, args)
+						reply := args:Message
+				ENDIF
+			CATCH e AS Exception
+				XanthiLog.Logger:Error("CommServer : ProcessMessage, " + e.Message)
+		END TRY
+		RETURN reply
+		
+		PUBLIC METHOD GetDataSession( id AS UINT64 ) AS ServerDataSession
+		RETURN SELF:Server:GetDataSession( id )
+		
+		PUBLIC METHOD AddDataSession( session AS ServerDataSession ) AS VOID
+			SELF:Server:AddDataSession( session )
+		RETURN
+		
+		PUBLIC METHOD DelDataSession( id AS UINT64 ) AS VOID
+			SELF:Server:DelDataSession( id )
 		RETURN
 		
 	END CLASS

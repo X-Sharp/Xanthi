@@ -10,7 +10,7 @@ USING System.Collections.Generic
 USING System.Text
 USING XanthiCommLib
 
-BEGIN NAMESPACE XanthiCommLib
+BEGIN NAMESPACE XanthiClientTest
 
 	/// <summary>
 	/// The FabRDD class.

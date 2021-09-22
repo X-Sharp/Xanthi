@@ -28,7 +28,7 @@ BEGIN NAMESPACE XanthiClientTest
 			//
 			msg := XanthiCommLib.Message{}
 			int32.TryParse( SELF:tbSessionID:Text, OUT number )
-			msg:SessionID := number
+			msg:SessionID := (UINT64)number
 			IF Enum.TryParse(SELF:comboCommand:Text, OUT cmd )
 				msg:Command := cmd
 			ENDIF
@@ -93,7 +93,7 @@ BEGIN NAMESPACE XanthiClientTest
 			IF howMany > 1
 				msg := XanthiCommLib.Message{}
 				int32.TryParse( SELF:tbSessionID:Text, OUT number )
-				msg:SessionID := number
+				msg:SessionID := (UINT64)number
 				IF Enum.TryParse(SELF:comboCommand:Text, OUT cmd )
 					msg:Command := cmd
 				ENDIF
