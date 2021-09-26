@@ -33,16 +33,20 @@ BEGIN NAMESPACE XanthiCommLib
 		MEMBER None
 		MEMBER Open
 		MEMBER Close
+		MEMBER GoTo
 		MEMBER GoTop
 		MEMBER GoBottom
+		MEMBER Skip
 		MEMBER FieldGet
 		MEMBER RowGet
 		MEMBER DbStruct
-		
+		MEMBER GetState
+		MEMBER RecNo
+		MEMBER Reccount
 	END ENUM
 
 	ENUM ServerInfo
-		MEMBER Port := 8889
+		MEMBER Port := 12345
 		MEMBER ReadTimeOut := 10000
 	END ENUM
 

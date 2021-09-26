@@ -2,18 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <ProjectGuid>e18c2d95-9164-487c-aedf-8d58ec529c1f</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <Name>XanthiClientTest_Rdd</Name>
+    <ProjectGuid>d426fd2f-3c0a-4555-b3ca-0f1f578e4c45</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XanthiCommLib</RootNamespace>
-    <AssemblyName>XanthiCommLib</AssemblyName>
+    <RootNamespace>XanthiClientTest_Rdd</RootNamespace>
+    <AssemblyName>XanthiClientTest_Rdd</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <Name>XanthiCommLib</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <vo15>false</vo15>
-    <OutputName>XanthiCommLib</OutputName>
+    <OutputName>XanthiClientTest_Rdd</OutputName>
     <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
     <StartupObject />
   </PropertyGroup>
@@ -39,11 +39,6 @@
   </PropertyGroup>
   <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp">
-      <Name>Microsoft.CSharp</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>Microsoft.CSharp.dll</AssemblyName>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <Name>Newtonsoft.Json</Name>
@@ -52,79 +47,73 @@
       <Private>True</Private>
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <Name>Newtonsoft.Json.Bson</Name>
-      <AssemblyName>Newtonsoft.Json.Bson.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
-      <Name>NLog</Name>
-      <AssemblyName>NLog.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-      <HintPath>..\packages\NLog.4.7.11\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration">
-      <Name>System.Configuration</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Configuration.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.IO.Compression">
-      <Name>System.IO.Compression</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.IO.Compression.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization">
-      <Name>System.Runtime.Serialization</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Runtime.Serialization.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.ServiceModel">
-      <Name>System.ServiceModel</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.ServiceModel.dll</AssemblyName>
-    </Reference>
-    <Reference Include="System.Transactions">
-      <Name>System.Transactions</Name>
-      <SpecificVersion>False</SpecificVersion>
-      <AssemblyName>System.Transactions.dll</AssemblyName>
-    </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="XSharp.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="XSharp.Core, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Core</Name>
+      <AssemblyName>XSharp.Core.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Data, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Data</Name>
+      <AssemblyName>XSharp.Data.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.Rdd, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.Rdd</Name>
+      <AssemblyName>XSharp.Rdd.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.Rdd.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.RT, Version=2.6.0.0, Culture=neutral, PublicKeyToken=ed555a0467764586">
+      <Name>XSharp.RT</Name>
+      <AssemblyName>XSharp.RT.dll</AssemblyName>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\XSharp\Assemblies\XSharp.RT.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientDataSession.prg" />
-    <Compile Include="CommClient.prg" />
-    <Compile Include="CommServerClient.prg" />
-    <Compile Include="CommServer.prg" />
-    <Compile Include="CommServerEvent.prg" />
-    <Compile Include="CommTools.prg" />
-    <Compile Include="ServerDataSession.prg" />
+    <Compile Include="Program.prg">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Message.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XanthiLog.prg" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-    <None Include="Readme.md" />
-    <None Include="Commands.md" />
+    <ProjectReference Include="..\XanthiCommLib\XanthiCommLib.xsproj">
+      <Name>XanthiCommLib</Name>
+      <Project>{e18c2d95-9164-487c-aedf-8d58ec529c1f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\XanthiRDD\XanthiRDD.xsproj">
+      <Name>XanthiRDD</Name>
+      <Project>{64a955dc-723d-4cf0-bcc0-115d6f97eb89}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
   <ProjectExtensions>

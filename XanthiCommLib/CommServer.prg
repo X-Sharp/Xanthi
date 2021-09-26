@@ -283,6 +283,7 @@ BEGIN NAMESPACE XanthiCommLib
 			TRY
 					BEGIN LOCK SELF:dataSessions
 						SELF:dataSessions:Remove( id )
+						// Todo Should we close the WorkArea ??
 				END LOCK
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommServer : DelDataSession, " + e.Message)

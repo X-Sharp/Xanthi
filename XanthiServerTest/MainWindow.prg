@@ -41,6 +41,7 @@ BEGIN NAMESPACE XanthiServerTest
    SELF:buttonStop:Visible := TRUE
    SELF:buttonStart:Visible := FALSE
    SELF:listBoxClients:Items:Clear()
+   SELF:listBoxMessages:Items:Clear()
    connections := 0
    SELF:Server:Start()
    

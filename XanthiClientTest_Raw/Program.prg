@@ -4,9 +4,9 @@ USING System.Linq
 USING System.Text
 USING System.Windows.Forms
 
-USING XanthiClientTest
+USING XanthiClientTest_Raw
 
-BEGIN NAMESPACE XanthiClientTest
+BEGIN NAMESPACE XanthiClientTest_Raw
 
 [STAThread] ;
 	FUNCTION Start() AS VOID

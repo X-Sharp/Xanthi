@@ -6,11 +6,11 @@ USING System.Runtime.InteropServices
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("XanthiClientTest")]
+[assembly: AssemblyTitle("XanthiRDD")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("XanthiClientTest")]
+[assembly: AssemblyProduct("XanthiRDD")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +21,7 @@ USING System.Runtime.InteropServices
 [assembly: ComVisible(FALSE)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a318b603-89bd-4e7d-86bd-a02259d82544")]
+[assembly: Guid("64a955dc-723d-4cf0-bcc0-115d6f97eb89")]
 
 //
 // Version information for an assembly consists of the following four values:

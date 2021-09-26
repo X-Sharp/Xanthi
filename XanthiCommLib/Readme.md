@@ -10,7 +10,7 @@ The Session ID for this message
 The Command send by the message
 
 **PROPERTY Code AS CodeValue**  
-Parameter or Return code
+When send Parameter if numeric, and Return code
 
 **PROPERTY PayLoad AS STRING**  
 The PayLoad for the current Command

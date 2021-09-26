@@ -2,18 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <Name>XanthiClientTest</Name>
+    <Name>XanthiClientTest_Raw</Name>
     <ProjectGuid>a318b603-89bd-4e7d-86bd-a02259d82544</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XanthiClientTest</RootNamespace>
-    <AssemblyName>XanthiClientTest</AssemblyName>
+    <RootNamespace>XanthiClientTest_Raw</RootNamespace>
+    <AssemblyName>XanthiClientTest_Raw</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <vo15>false</vo15>
-    <OutputName>XanthiClientTest</OutputName>
+    <OutputName>XanthiClientTest_Raw</OutputName>
     <XSharpProjectversion>2.8.3.15</XSharpProjectversion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
@@ -56,7 +56,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FabRDD.prg" />
     <Compile Include="Program.prg">
       <SubType>Code</SubType>
     </Compile>
