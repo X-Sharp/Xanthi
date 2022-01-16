@@ -104,13 +104,13 @@ BEGIN NAMESPACE XanthiCommLib
 								// 4 bytes == 32 bits unsigned value == DWORD
 							bytesRead := SELF:clientStream:Read(header, 0, 4)
 						CATCH err AS System.IO.IOException
-							XanthiLog.Logger:Info("CommServerClient : ReadData Stream Closed, " + err.Message)
+							XanthiLog.Logger:Information("CommServerClient : ReadData Stream Closed, " + err.Message)
 							EXIT
 						CATCH e AS Exception
 							XanthiLog.Logger:Error("CommServerClient : ReadData Header, " + e.Message)
 						END TRY
 						IF bytesRead != 4
-							XanthiLog.Logger:Info("CommServerClient : ReadData Unable to read 4 bytes for Header")
+							XanthiLog.Logger:Information("CommServerClient : ReadData Unable to read 4 bytes for Header")
 							EXIT
 						ENDIF
 						// Ok, what is the size of the expected Message
@@ -121,13 +121,13 @@ BEGIN NAMESPACE XanthiCommLib
 								// Now, read the Data
 							bytesRead := SELF:clientStream:Read(msgBytes, 0, (INT)msgSize)
 						CATCH err AS System.IO.IOException
-							XanthiLog.Logger:Info("CommServerClient : ReadData Stream Closed, " + err.Message)
+							XanthiLog.Logger:Information("CommServerClient : ReadData Stream Closed, " + err.Message)
 							EXIT
 						CATCH e AS Exception
 							XanthiLog.Logger:Error("CommServerClient : ReadData Error reading data bytes, " + e.Message)
 						END TRY
 						IF bytesRead != msgSize
-							XanthiLog.Logger:Warn("CommServerClient : ReadData Unable to read all data bytes.")
+							XanthiLog.Logger:Warning("CommServerClient : ReadData Unable to read all data bytes.")
 							EXIT
 						ENDIF
 						// Now, decode the message
@@ -139,10 +139,10 @@ BEGIN NAMESPACE XanthiCommLib
 						// Message CallBack
 						SELF:DoOnMessageInfo( msg )
 						// Ok, now Process.....
-						XanthiLog.Logger:Info("CommServerClient : Process message," + msg:ToString() )
+						XanthiLog.Logger:Information("CommServerClient : Process message," + msg:ToString() )
 						VAR reply := SELF:DoOnMessageProcess( msg )
 						IF reply != NULL
-							XanthiLog.Logger:Info("CommServerClient : Replying message," + reply:ToString() )
+							XanthiLog.Logger:Information("CommServerClient : Replying message," + reply:ToString() )
 							// Write Back
 							IF SELF:UseBSON
 									VAR bsonBytes := reply.SerializeBinary( )

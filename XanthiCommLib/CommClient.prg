@@ -147,7 +147,7 @@ BEGIN NAMESPACE XanthiCommLib
 								END LOCK
 						ENDIF
 					ELSE
-						XanthiLog.Logger:Warn("CommClient : WaitReply, Connection is Closed " + SELF:remoteHostEP:ToString() )
+						XanthiLog.Logger:Warning("CommClient : WaitReply, Connection is Closed " + SELF:remoteHostEP:ToString() )
 				ENDIF
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommClient : WaitReply, " + e.Message)
@@ -180,7 +180,7 @@ BEGIN NAMESPACE XanthiCommLib
 							// Then the Data
 						SELF:clientStream:Write(buffer, 0, buffer:Length)
 					ELSE
-						XanthiLog.Logger:Warn("CommClient : WriteData, Connection is Closed " + SELF:remoteHostEP:ToString() )
+						XanthiLog.Logger:Warning("CommClient : WriteData, Connection is Closed " + SELF:remoteHostEP:ToString() )
 				ENDIF
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommClient : WriteData, " + e.Message)
@@ -208,13 +208,13 @@ BEGIN NAMESPACE XanthiCommLib
 								// 4 bytes == 32 bits unsigned value == DWORD
 							bytesRead := SELF:clientStream:Read(header, 0, 4)
 						CATCH err AS System.IO.IOException
-							XanthiLog.Logger:Info("CommClient : ReadData Stream Closed, " + err.Message)
+							XanthiLog.Logger:Information("CommClient : ReadData Stream Closed, " + err.Message)
 							EXIT
 						CATCH e AS Exception
 							XanthiLog.Logger:Error("CommClient : ReadData Header, " + e.Message)
 						END TRY
 						IF bytesRead != 4
-							XanthiLog.Logger:Info("CommClient : ReadData Unable to read 4 bytes for Header")
+							XanthiLog.Logger:Information("CommClient : ReadData Unable to read 4 bytes for Header")
 							EXIT
 						ENDIF
 						// Ok, what is the size of the expected Message
@@ -225,13 +225,13 @@ BEGIN NAMESPACE XanthiCommLib
 								// Now, read the Data
 							bytesRead := SELF:clientStream:Read(msgBytes, 0, (INT)msgSize)
 						CATCH err AS System.IO.IOException
-							XanthiLog.Logger:Info("CommClient : ReadData Stream Closed, " + err.Message)
+							XanthiLog.Logger:Information("CommClient : ReadData Stream Closed, " + err.Message)
 							EXIT
 						CATCH e AS Exception
 							XanthiLog.Logger:Error("CommClient : ReadData Error reading data bytes, " + e.Message)
 						END TRY
 						IF bytesRead != msgSize
-							XanthiLog.Logger:Warn("CommClient : ReadData Unable to read all data bytes.")
+							XanthiLog.Logger:Warning("CommClient : ReadData Unable to read all data bytes.")
 							EXIT
 						ENDIF
 						// Now, decode the message
@@ -241,7 +241,7 @@ BEGIN NAMESPACE XanthiCommLib
 							msg := Message.DeSerializeString( msgBytes )
 						ENDIF
 						// Ok, now Store.....
-						XanthiLog.Logger:Info("CommClient : Enqueue message," + msg:Command:ToString() + "," + msg:PayLoad )
+						XanthiLog.Logger:Information("CommClient : Enqueue message," + msg:Command:ToString() + "," + msg:PayLoad )
 						BEGIN LOCK SELF:messages
 							SELF:messages:Enqueue( msg )
 						END LOCK

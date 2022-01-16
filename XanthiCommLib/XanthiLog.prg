@@ -9,29 +9,30 @@ USING System
 USING System.Collections.Generic
 USING System.Text
 USING System.IO
-USING NLog
+USING Serilog
+USING Serilog.Core
 
 BEGIN NAMESPACE XanthiCommLib
 
 	PUBLIC STATIC CLASS XanthiLog
 		
-	PRIVATE STATIC xanthiLogger := NULL AS NLog.Logger
+	PRIVATE STATIC xanthiLogger := NULL AS ILogger
 		
 	PRIVATE STATIC logFile := NULL AS STRING
 		
-		PUBLIC STATIC PROPERTY Logger AS NLog.Logger
+		PUBLIC STATIC PROPERTY Logger AS ILogger
 			GET
 				IF ( xanthiLogger == NULL )
 					// Create the Default Config
-					VAR config := NLog.Config.LoggingConfiguration{}
-					// Targets where to log to: File and Console
-					VAR logfile := NLog.Targets.FileTarget{"logfile"} { FileName := XanthiLog.FileName }
-					// Rules for mapping loggers to targets            
-					config:AddRule(LogLevel.Trace, LogLevel.Fatal, logfile)
-					// Apply config           
-					NLog.LogManager:Configuration := config
+					VAR config := LoggerConfiguration{}
+					// Set the Default values
+					config:MinimumLevel:Debug()
+					config:WriteTo:File( XanthiLog.FileName )
+					// But allow to read settings from 
+					// TODO : Strangely this logConfig doesn't work
+					config:ReadFrom:AppSettings( NULL, "xanthilog.config" )
 					//
-					XanthiLog.xanthiLogger := NLog.LogManager.GetCurrentClassLogger()
+					xanthiLogger := config:CreateLogger()
 				ENDIF
 				RETURN XanthiLog.xanthiLogger
 			END GET
