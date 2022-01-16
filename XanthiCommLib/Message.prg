@@ -30,6 +30,7 @@ BEGIN NAMESPACE XanthiCommLib
 	END ENUM
 	
 	ENUM CommandValue
+		// Standard RDD commands
 		MEMBER None
 		MEMBER Open
 		MEMBER Close
@@ -43,6 +44,9 @@ BEGIN NAMESPACE XanthiCommLib
 		MEMBER GetState
 		MEMBER RecNo
 		MEMBER Reccount
+		// User/Data Session Management
+		MEMBER OpenSession
+		MEMBER CloseSession
 	END ENUM
 
 	ENUM ServerInfo
