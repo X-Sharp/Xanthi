@@ -10,6 +10,7 @@ USING System.Threading.Tasks
 
 USING System.Windows.Forms
 USING XanthiCommLib
+USING XanthiRDD
 
 BEGIN NAMESPACE XanthiClientTest_Raw
 
@@ -81,7 +82,7 @@ BEGIN NAMESPACE XanthiClientTest_Raw
 			//
 			SELF:statusLabel:Text := ""
 			//
-			VAR commands := Enum.GetValues(TYPEOF(XanthiCommLib.CommandValue))
+			VAR commands := Enum.GetValues(TYPEOF(XanthiRDD.CommandValue))
 			FOREACH VAR cmd IN commands
 				SELF:comboCommand:Items:Add( cmd:ToString() )
 			NEXT

@@ -15,7 +15,9 @@ USING System.Threading.Tasks
 
 BEGIN NAMESPACE XanthiCommLib
 
-	
+	/// <summary>
+	/// Xanthi Communication server
+	/// </summary>
 	PUBLIC CLASS CommServer
 		
 		PRIVATE listeningThread AS Thread
@@ -116,9 +118,9 @@ BEGIN NAMESPACE XanthiCommLib
 			RETURN
 		
 			// Init all Server properties 
-			/// <summary>
-			/// 
-			/// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		PRIVATE METHOD InitServer() AS VOID
 			TRY
 				SELF:listener := TcpListener{SELF:ep}
@@ -147,7 +149,9 @@ BEGIN NAMESPACE XanthiCommLib
 		
 		
 		/// <summary>
-		/// listening to All incoming Connection
+		/// listening to All incoming Connection.
+		/// When a client is connecting, the newly created client will be initialized wth OnMessageInfo, and OnMessageProcess.
+		/// Then OnClientAccept is called.
 		/// </summary>
 		PRIVATE METHOD listening() AS VOID
 			LOCAL client AS TcpClient
@@ -157,7 +161,7 @@ BEGIN NAMESPACE XanthiCommLib
 			TRY
 				// Start listening for client requests.
 				SELF:listener:Start()
-			
+				//
 				SELF:_isRunning := TRUE
 				SELF:autoInc := 0
 				// Please, run forever...
@@ -205,27 +209,31 @@ BEGIN NAMESPACE XanthiCommLib
 			IF SELF:isRunning
 				// Put this in a Thread/Task to avoid a DeadLock in the Stop Method of the Client
 				VAR onStop := Task.Run( {  ;
-				=> ;
-				// This will force the Listener to exit the blocking AcceptTcpClient
-				SELF:listener:Stop()
-				BEGIN LOCK clients
-					length := SELF:clients:Count
-				END LOCK
-				DO WHILE ( length > 0 )
-					BEGIN LOCK clients
-						clt := SELF:clients[0]
-					END LOCK
-					//
-					clt:Stop()
+					=> ;
+					// This will force the Listener to exit the blocking AcceptTcpClient
+					SELF:listener:Stop()
 					BEGIN LOCK clients
 						length := SELF:clients:Count
 					END LOCK
-				ENDDO
+					DO WHILE ( length > 0 )
+						BEGIN LOCK clients
+							clt := SELF:clients[0]
+						END LOCK
+						//
+						clt:Stop()
+						BEGIN LOCK clients
+							length := SELF:clients:Count
+						END LOCK
+					ENDDO
 				} )
 				//
 			ENDIF
 			RETURN 
 		
+		/// <summary>
+		/// Remove a Client from the managed Client list
+		/// </summary>
+		/// <param name="id"></param>
 		INTERNAL METHOD RemoveClient(id AS LONG ) AS VOID
 			LOCAL clt AS CommServerClient
 			// Single Acces to the Client list (Maybe we could use Begin Lock ?)
@@ -243,6 +251,10 @@ BEGIN NAMESPACE XanthiCommLib
 				RETURN
 			ENDIF
 		
+		/// <summary>
+		/// Callback the OnClientClose delegate
+		/// </summary>
+		/// <param name="clt"></param>
 		INTERNAL METHOD DoOnClientClose(clt AS CommServerClient) AS VOID
 			TRY
 				// Do we have a CallBack method ?
@@ -258,7 +270,11 @@ BEGIN NAMESPACE XanthiCommLib
 			RETURN
 			
 			#region DataSession management
-		
+		/// <summary>
+		/// Get a data Session from the managed Session list
+		/// </summary>
+		/// <param name="id">The Id of the Session to retrieve</param>
+		/// <returns></returns>
 		PUBLIC METHOD GetDataSession( id AS UINT64 ) AS ServerDataSession
 			LOCAL session := NULL AS ServerDataSession
 			TRY
@@ -270,6 +286,10 @@ BEGIN NAMESPACE XanthiCommLib
 			END TRY
 			RETURN session
 		
+		/// <summary>
+		/// Add a managed Session to the list
+		/// </summary>
+		/// <param name="session"></param>
 		PUBLIC METHOD AddDataSession( session AS ServerDataSession ) AS VOID
 			TRY
 				BEGIN LOCK SELF:dataSessions
@@ -280,6 +300,10 @@ BEGIN NAMESPACE XanthiCommLib
 			END TRY
 			RETURN 
 		
+		/// <summary>
+		/// Delete a Session from the list
+		/// </summary>
+		/// <param name="id"></param>
 		PUBLIC METHOD DelDataSession( id AS UINT64 ) AS VOID
 			TRY
 				BEGIN LOCK SELF:dataSessions

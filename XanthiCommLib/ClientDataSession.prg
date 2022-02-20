@@ -15,13 +15,25 @@ BEGIN NAMESPACE XanthiCommLib
 	/// The ClientDataSession class. UnUsed Currently
 	/// </summary>
 	CLASS ClientDataSession
-		// The IPAddress linked to this DataSession
+		/// <summary>
+		/// The IPAddress linked to this DataSession
+		/// </summary>
+		/// <value></value>
 		PROPERTY IPAddress AS STRING AUTO
-		// The wanted FileName
+		/// <summary>
+		/// The wanted FileName
+		/// </summary>
+		/// <value></value>
 		PROPERTY FileName AS STRING AUTO
-		// The real FileName
+		/// <summary>
+		/// The real FileName
+		/// </summary>
+		/// <value></value>
 		PROPERTY RealFileName AS STRING AUTO
-		// Session ID
+		/// <summary>
+		/// Session ID
+		/// </summary>
+		/// <value></value>
 		PROPERTY Id AS INT AUTO
 		//
 		

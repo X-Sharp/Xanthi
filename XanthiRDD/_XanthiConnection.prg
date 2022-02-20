@@ -4,6 +4,8 @@
 // Created for   : 
 // WorkStation   : FABXPS
 
+/*
+
 
 USING System
 USING System.Collections.Generic
@@ -12,6 +14,7 @@ USING XanthiCommLib
 USING XSharp.RDD
 USING XSharp.Rdd.Support
 USING Newtonsoft.Json
+
 
 BEGIN NAMESPACE XanthiRDD
 
@@ -26,13 +29,14 @@ BEGIN NAMESPACE XanthiRDD
 		
 	INTERNAL _fields AS List<XRddFieldInfo>
 
-		PROPERTY TimeOut AS INT AUTO
+		PROPERTY TimeOut AS INT GET SELF:Server:ReadTimeOut
+		PROPERTY Server AS ServerInfo AUTO
 		
-		CONSTRUCTOR( ServerIP AS STRING )
-			SELF:_client := CommClient{ ServerIP, (LONG)ServerInfo.Port  }
+		CONSTRUCTOR( server AS ServerInfo )
+			SELF:_client := CommClient{ server:Address, server:Port  }
 			SELF:_fields := List<XRddFieldInfo>{}
 			SELF:_sessionID := 0
-			SELF:TimeOut := (INT)ServerInfo.ReadTimeOut
+			SELF:Server := server
 			RETURN
 		
 		
@@ -53,31 +57,6 @@ BEGIN NAMESPACE XanthiRDD
 					IF msg:Code == CodeValue.Ok
 						SELF:_sessionID := (INT)msg:SessionID
 						SELF:_fields := JsonConvert.DeserializeObject<List<XRddFieldInfo>>( msg:Payload )
-						isOk := TRUE
-					ENDIF
-				ENDIF
-			ENDIF
-			RETURN isOk
-		
-		METHOD GetStates( states AS List<STRING> ) AS LOGIC
-			LOCAL msg AS Message
-			LOCAL isOk := FALSE AS LOGIC
-			IF SELF:_sessionID == 0
-				RETURN FALSE
-			ENDIF
-			// Send Message
-			msg := Message{}
-			msg:SessionID := (UINT64)SELF:_sessionID
-			msg:Command := CommandValue.GetState
-			//
-			IF SELF:_client:Connect()
-				SELF:_client:WriteMessage( msg )
-				msg := SELF:_client:WaitReply( SELF:TimeOut )
-				SELF:_client:Close()
-				IF msg != NULL
-					// We have a reply
-					IF msg:Code == CodeValue.Ok
-						states:AddRange( JsonConvert.DeserializeObject<List<STRING>>( msg:Payload ) )
 						isOk := TRUE
 					ENDIF
 				ENDIF
@@ -234,3 +213,5 @@ BEGIN NAMESPACE XanthiRDD
 		
 	END CLASS
 END NAMESPACE // XanthiClientTest_Rdd
+
+*/

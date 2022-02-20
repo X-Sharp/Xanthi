@@ -4,7 +4,7 @@
 // Created for   : 
 // WorkStation   : FABXPS
 
-
+/*
 USING System
 USING System.Collections.Generic
 USING System.Text
@@ -25,4 +25,7 @@ BEGIN NAMESPACE XanthiRDD
 			SUPER(oInfo)
 			
 	END CLASS
+	
 END NAMESPACE // XanthiRDD
+
+*/

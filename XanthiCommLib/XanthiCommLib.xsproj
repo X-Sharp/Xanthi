@@ -14,7 +14,7 @@
     <Dialect>Core</Dialect>
     <vo15>false</vo15>
     <OutputName>XanthiCommLib</OutputName>
-    <XSharpProjectversion>2.10.0.1</XSharpProjectversion>
+    <XSharpProjectversion>2.10.0.3</XSharpProjectversion>
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
@@ -26,6 +26,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DocumentationFile>XanthiCommLib.Xml</DocumentationFile>
+    <DisabledWarnings>1591</DisabledWarnings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -135,6 +138,7 @@
     <Compile Include="CommServer.prg" />
     <Compile Include="CommServerEvent.prg" />
     <Compile Include="CommTools.prg" />
+    <Compile Include="Connection.prg" />
     <Compile Include="ServerDataSession.prg" />
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
@@ -142,6 +146,7 @@
     <Compile Include="Message.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ServerInfo.prg" />
     <Compile Include="XanthiLog.prg" />
   </ItemGroup>
   <ItemGroup>

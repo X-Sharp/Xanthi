@@ -8,6 +8,7 @@ USING XSharp.Rdd.Support
 
 USING XanthiClientTest_Rdd
 USING XanthiRdd
+USING XanthiCommLib
 
 BEGIN NAMESPACE XanthiClientTest_Rdd
 
@@ -16,8 +17,13 @@ BEGIN NAMESPACE XanthiClientTest_Rdd
 		
 		Console.WriteLine("Xanthi Test")
 		//
-		VAR con := XanthiConnection{"127.0.0.1"}
-		VAR xanthi := XanthiRDD{}
+		VAR srvr := ServerInfo{ "127.0.0.1" }
+		srvr:User := "Fabrice"
+		srvr:Password := "XSharp"
+		//
+		VAR con := Connection{ srvr }
+		con:OpenSession()
+		VAR xanthi := XanthiRDD{ con }
 		xanthi:Connection := con
 		// Only the filename is used currently
 		VAR dbf := DbOpenInfo{ "customer.dbf", "customer", 1, TRUE, TRUE }

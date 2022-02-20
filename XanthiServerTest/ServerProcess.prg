@@ -32,101 +32,39 @@ BEGIN NAMESPACE XanthiServerTest
 			LOCAL msg AS Message
 			LOCAL server AS CommServer
 			LOCAL dataSession AS ServerDataSession
-			// Default Reply
-			reply := Message{}
-			reply:Code := CodeValue.NotImplemented
 			// The Message we will handle
 			msg := e:Message
 			// The Comm Server
 			server := e:Client:Server
+			// Default Reply
+			reply := Message{}
+			reply.Command := msg:Command
+			reply:Code := CodeValue.NotImplemented
 			//
 			dataSession := server:GetDataSession( msg:SessionID )
-			IF dataSession != NULL 
-				IF msg.Command == CommandValue.OpenSession
-						// DataSession is already open for this SessionID
-					reply:Code := CodeValue.Forbidden
-				ELSE
+			//
+			IF ( msg:Command >= ConnectionCommand.OpenSession ) .AND. ( msg:Command <= ConnectionCommand.CheckSession )
+				reply := SELF:ProcessConnectionCommand( dataSession, e )
+			ELSE
+				IF dataSession != NULL 
 					// Indicate what Session we processed
 					reply:SessionID := msg:SessionID
 					SWITCH msg:Command
-						CASE CommandValue.Open
+					CASE CommandValue.Open
+						//
+						LOCAL info := JsonConvert.DeserializeObject<DbOpenInfo>( msg:Payload ) AS DbOpenInfo
+						IF DbUseArea( TRUE, "DBFCDX", info:FullName, info:Alias, info:Shared, info:ReadOnly )
 							//
-							reply.Command := CommandValue.Open
-							// Todo : Should we Map the FileName to a specific Area on the Server ?
-							// 
-							IF String.IsNullOrEmpty(msg.Payload) .OR. !System.IO.File.Exists(msg.PayLoad)
-								reply:Code := CodeValue.NotFound
-							ELSE
-								//
-
-								// Let's make it
-								IF DbUseArea( TRUE, "DBFCDX", msg.PayLoad )
-									// 
-									//#error
-									dataSession := ServerDataSession{}
-									dataSession:FileName := msg.PayLoad
-									dataSession:WorkArea := (INT)DbSelect()
-									dataSession:Works := RuntimeState:WorkAreas
-									server:AddDataSession( dataSession )
-									reply:Code := CodeValue.Ok
-									reply:SessionID := dataSession:Id
-									// And return the DbStruct 
-									LOCAL oRdd AS IRdd
-									VAR Workareas := dataSession:Works
-									oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
-									VAR fieldList  := GetDbStruct( oRdd )
-									reply.Payload := JsonConvert.SerializeObject( fieldList )
-								ENDIF
-							ENDIF
+							VAR currentRDDState := SELF:GetCurrentRDDState(dataSession)
+							reply:Code := CodeValue.Ok
+							reply:RDDState := JsonConvert.SerializeObject( currentRDDState )
+						ENDIF
 					CASE CommandValue.Close
 						reply.Command := CommandValue.Close
 						// Closing file
 						DbCloseArea( dataSession:WorkArea) 
 						// 
 						server:DelDataSession( msg:SessionID )
-						reply:Code := CodeValue.Ok
-					CASE CommandValue.DbStruct
-						reply:Command := CommandValue.DbStruct
-						// Return DbStruct of file
-						LOCAL oRdd AS IRdd
-						VAR Workareas := dataSession:Works
-						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
-						VAR fieldList  := GetDbStruct( oRdd )
-						reply.Payload := JsonConvert.SerializeObject( fieldList )
-						// 
-						reply:Code := CodeValue.Ok
-					CASE CommandValue.GetState
-						reply:Command := CommandValue.GetState
-						// Return DbStruct of file
-						LOCAL oRdd AS IRdd
-						VAR Workareas := dataSession:Works
-						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
-						VAR states := List<STRING>{}
-						states:Add(oRDD:BoF:ToString())
-						states:Add(oRDD:EoF:ToString())
-						states:Add(oRDD:Found:ToString())
-						states:Add(oRDD:Recno:ToString())
-						states:Add(oRDD:Reccount:ToString())
-						// Todo Would be better to have an Object to store State, and SETs
-						reply.Payload := JsonConvert.SerializeObject( states )
-						// 
-						reply:Code := CodeValue.Ok
-					CASE CommandValue.Recno
-						reply:Command := CommandValue.Recno
-						// Return DbStruct of file
-						LOCAL oRdd AS IRdd
-						VAR Workareas := dataSession:Works
-						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
-						reply.Payload := oRdd:RecNo:ToString()
-						// 
-						reply:Code := CodeValue.Ok
-					CASE CommandValue.Reccount
-						// Return DbStruct of file
-						LOCAL oRdd AS IRdd
-						VAR Workareas := dataSession:Works
-						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
-						reply.Payload := oRdd:Reccount:ToString()
-						// 
 						reply:Code := CodeValue.Ok
 					CASE CommandValue.GoTo
 						reply:Command := CommandValue.GoTo
@@ -135,7 +73,7 @@ BEGIN NAMESPACE XanthiServerTest
 						VAR Workareas := dataSession:Works
 						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
 						IF oRdd:Goto( msg:Code )
-								reply.Payload := oRdd:RecNo:ToString()
+							reply.Payload := oRdd:RecNo:ToString()
 							reply:Code := CodeValue.Ok
 						ELSE
 							reply:Code := CodeValue.NotFound
@@ -147,7 +85,7 @@ BEGIN NAMESPACE XanthiServerTest
 						VAR Workareas := dataSession:Works
 						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
 						IF oRdd:GoTop()
-								reply.Payload := oRdd:RecNo:ToString()
+							reply.Payload := oRdd:RecNo:ToString()
 							reply:Code := CodeValue.Ok
 						ELSE
 							reply:Code := CodeValue.NotFound
@@ -159,7 +97,7 @@ BEGIN NAMESPACE XanthiServerTest
 						VAR Workareas := dataSession:Works
 						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
 						IF oRdd:GoBottom()
-								reply.Payload := oRdd:RecNo:ToString()
+							reply.Payload := oRdd:RecNo:ToString()
 							reply:Code := CodeValue.Ok
 						ELSE
 							reply:Code := CodeValue.NotFound
@@ -170,7 +108,7 @@ BEGIN NAMESPACE XanthiServerTest
 						VAR Workareas := dataSession:Works
 						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
 						IF oRdd:Skip( msg:Code )
-								reply.Payload := oRdd:RecNo:ToString()
+							reply.Payload := oRdd:RecNo:ToString()
 							reply:Code := CodeValue.Ok
 						ELSE
 							reply:Code := CodeValue.NotFound
@@ -181,8 +119,8 @@ BEGIN NAMESPACE XanthiServerTest
 						VAR Workareas := dataSession:Works
 						oRdd := Workareas:GetRDD((DWORD)dataSession:WorkArea)
 						TRY
-								VAR retValue := oRDD:GetValue( msg:Code )
-								reply.Payload := JsonConvert.SerializeObject( retValue )
+							VAR retValue := oRDD:GetValue( msg:Code )
+							reply.Payload := JsonConvert.SerializeObject( retValue )
 							reply:Code := CodeValue.Ok
 						CATCH
 							reply:Code := CodeValue.NotFound
@@ -190,35 +128,91 @@ BEGIN NAMESPACE XanthiServerTest
 					CASE CommandValue.None
 						reply:Command := CommandValue.None
 						reply:Code := CodeValue.Ok
-					CASE CommandValue.CloseSession
-						reply:Command := CommandValue.CloseSession
-						reply:Code := CodeValue.Ok
 					OTHERWISE
 						reply:Code := CodeValue.NotImplemented
-				END SWITCH
-			ENDIF
-			ELSE
-			IF msg:Command == CommandValue.OpenSession
-			ENDIF
-			
+					END SWITCH
+				ENDIF
 			ENDIF
 			//
 			e:Message := reply
 			//
-		RETURN 
+			RETURN 
 		
-		PRIVATE METHOD GetDbStruct( oRDD AS IRDD ) AS List<XRddFieldInfo>
-			VAR _fieldList  := List<XRddFieldInfo>{}
-			LOCAL f AS INT
-			LOCAL fieldCount := oRDD:FieldCount AS LONG
-			FOR f:=1 UPTO fieldCount
-				LOCAL oInfo    AS XRddFieldInfo
-				oInfo := XRddFieldInfo{ oRDD:GetField(f) }
-				_fieldList:Add(oInfo)
-			NEXT
-		RETURN _fieldList
+			//		PRIVATE METHOD GetDbStruct( oRDD AS IRDD ) AS List<XRddFieldInfo>
+			//			VAR _fieldList  := List<XRddFieldInfo>{}
+			//			LOCAL f AS INT
+			//			LOCAL fieldCount := oRDD:FieldCount AS LONG
+			//			FOR f:=1 UPTO fieldCount
+			//				LOCAL oInfo    AS XRddFieldInfo
+			//				oInfo := XRddFieldInfo{ oRDD:GetField(f) }
+			//				_fieldList:Add(oInfo)
+			//			NEXT
+			//		RETURN _fieldList
 		
-		
+		PRIVATE METHOD ProcessConnectionCommand( dataSession AS ServerDataSession, e AS CommClientMessageArgs ) AS Message
+			LOCAL msg AS Message
+			LOCAL server AS CommServer
+			LOCAL reply AS Message
+			// Default Reply
+			reply := Message{}
+			reply:Code := CodeValue.NotImplemented
+			// The Message we will handle
+			msg := e:Message
+			// The Comm Server
+			server := e:Client:Server
+			//
+			SWITCH msg.Command
+			CASE ConnectionCommand.OpenSession
+				IF dataSession != NULL
+					// DataSession is already open for this SessionID
+					reply:Code := CodeValue.Forbidden
+				ELSE
+					//
+					//VAR cargo := Tuple<STRING,STRING,STRING>{ SELF:Info:User, SELF:Info:Password, SELF:Info:Driver}
+					TRY
+						VAR cargo := Jsonconvert.DeserializeObject<Tuple<STRING,STRING>>( msg:Payload )
+						IF ( cargo:Item1 == "Fabrice" .AND. cargo.Item2 == "XSharp"  )
+							dataSession := ServerDataSession{}
+							dataSession:WorkArea := (INT)DbSelect()
+							dataSession:Works := RuntimeState:WorkAreas
+							server:AddDataSession( dataSession )
+							//
+							reply:Code := CodeValue.Ok
+							reply:SessionID := dataSession:Id
+						ENDIF
+					END TRY
+				ENDIF
+			CASE ConnectionCommand.CloseSession
+				reply:Code := CodeValue.Forbidden
+			CASE ConnectionCommand.CheckSession
+				reply:Code := CodeValue.Forbidden
+			END SWITCH
+			//
+			RETURN reply
+	
+		PRIVATE METHOD GetCurrentRDDState(dataSession AS ServerDataSession) AS XanthiRDDState
+			LOCAL state AS XanthiRDDState
+			LOCAL oRdd AS IRdd
+			//
+			oRdd := dataSession:Works:GetRDD( (DWORD)dataSession:WorkArea )
+			//
+			state := XanthiRDDState{}
+			state:Alias :=		oRdd:Alias
+			state:Area :=		oRdd:Area
+			state:BoF :=		oRdd:Bof
+			state:Deleted :=	oRdd:Deleted
+			state:Driver :=		oRdd:Driver
+			state:EoF :=		oRdd:Eof
+			state:Exclusive :=	oRdd:Exclusive
+			state:FieldCount :=	oRdd:FieldCount
+			state:FilterText := oRdd:FilterText
+			state:Found :=		oRdd:Found
+			state:RecCount :=	oRdd:RecCount
+			state:RecId :=		oRdd:RecId
+			state:RecNo :=		oRdd:RecNo
+			state:Shared :=		oRdd:Shared
+			//
+			RETURN state
 	END CLASS
 	
 END NAMESPACE

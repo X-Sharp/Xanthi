@@ -5,9 +5,9 @@ USING System.Text
 USING System.IO
 USING NewtonSoft.Json
 USING NewtonSoft.Json.Bson
+USING System.Net
 
 BEGIN NAMESPACE XanthiCommLib
-
 
 	ENUM CodeValue
 		MEMBER Ok := 200
@@ -29,64 +29,66 @@ BEGIN NAMESPACE XanthiCommLib
 
 	END ENUM
 	
-	ENUM CommandValue
-		// Standard RDD commands
-		MEMBER None
-		MEMBER Open
-		MEMBER Close
-		MEMBER GoTo
-		MEMBER GoTop
-		MEMBER GoBottom
-		MEMBER Skip
-		MEMBER FieldGet
-		MEMBER RowGet
-		MEMBER DbStruct
-		MEMBER GetState
-		MEMBER RecNo
-		MEMBER Reccount
-		// User/Data Session Management
-		MEMBER OpenSession
-		MEMBER CloseSession
-	END ENUM
 
-	ENUM ServerInfo
-		MEMBER Port := 12345
-		MEMBER ReadTimeOut := 10000
-	END ENUM
 
-	PUBLIC DELEGATE  CommClientMessageHandler(sender AS System.Object, e AS CommClientMessageArgs) AS VOID
-	
-		/// <summary>
-		/// The CommServerEvent class.
+
+	/// <summary>
+	/// The CommServerEvent class.
 	/// </summary>
 	CLASS CommClientMessageArgs INHERIT EventArgs
 	
-	PUBLIC PROPERTY Client AS CommServerClient AUTO
-	PUBLIC PROPERTY Message AS Message AUTO
+		PUBLIC PROPERTY Client AS CommServerClient AUTO
+		PUBLIC PROPERTY Message AS Message AUTO
 	
-	CONSTRUCTOR()
-	RETURN
+		CONSTRUCTOR()
+			RETURN
 	
-END CLASS
+	END CLASS
 	
 	
 	/// <summary>
 	/// Message class used to exchange informations, command, state, ...
 	/// </summary>	
 	CLASS Message
-		// The Session ID for this message
+		/// <summary>
+		/// The Session ID for this message
+		/// </summary>
 		PROPERTY SessionID AS UINT64 AUTO
-		// The Command send by the message
-		PROPERTY Command AS CommandValue AUTO
-		// Parameter or Return Value
-		PROPERTY Code AS CodeValue AUTO
-		// The PayLoad for the current Command
+
+		/// <summary>
+		/// The Command send by the message (One of the Command Value)
+		/// Value >= 100 : RDD Command code
+		/// Value < 100  : Connection/Session management Code
+		/// </summary>
+		PROPERTY Command AS INT AUTO
+
+		/// <summary>
+		/// Parameter or simple Return Value
+		/// </summary>
+		PROPERTY Code AS INT AUTO
+
+		/// <summary>
+		/// The PayLoad for the current Command
+		/// </summary>
 		PROPERTY PayLoad AS STRING AUTO
 		
-		CONSTRUCTOR() STRICT
+		/// <summary>
+		/// The RDD State object, result of the last Command
+		/// </summary>
+		PROPERTY RDDState AS STRING AUTO
+
+		/// <summary>
+		/// The RDD Error object, result of the last Command
+		/// </summary>
+		PROPERTY RDDError AS STRING AUTO
+		
+		CONSTRUCTOR()
 			SELF:Code := CodeValue.Ok
-			SELF:Command := CommandValue.None
+			SELF:Command := 0 // CommandValue.None
 			SELF:SessionID := 0
+			SELF:PayLoad := NULL
+			SELF:RDDState := NULL
+			SELF:RDDError := NULL
 			RETURN
 		
 		/// <summary>
@@ -122,7 +124,7 @@ END CLASS
 				msg := serializer:DeSerialize<Message>(reader)
 			END USING
 			//
-		RETURN msg
+			RETURN msg
 		
 		/// <summary>
 		/// DeSerialize a JSON String to a Message object
@@ -131,8 +133,11 @@ END CLASS
 			LOCAL msg AS Message
 			msg := JSonConvert.DeserializeObject<Message>( json )
 			//
-		RETURN msg
+			RETURN msg
 
+		/// <summary>
+		/// DeSerialize a BSON Byte Array to a Message object
+		/// </summary>
 		STATIC METHOD DeSerializeString( byteArray AS BYTE[] ) AS Message
 			LOCAL msg AS Message
 			VAR ms := MemoryStream{byteArray}
@@ -142,10 +147,19 @@ END CLASS
 				msg := (Message)serializer:DeSerialize(reader, TypeOf(Message) )
 			END USING
 			//
-		RETURN msg
+			RETURN msg
 
 		PUBLIC METHOD ToString() AS STRING
-		RETURN SELF:SessionID:ToString() + ", "  + SELF:Command:ToString() + "," + SELF:Code:ToString() + ", " + SELF:PayLoad
+			RETURN SELF:SessionID:ToString() + ", "  + SELF:Command:ToString() + "," + SELF:Code:ToString() + ", " + SELF:PayLoad
 		
 	END CLASS
-END NAMESPACE
+
+/// <summary>
+/// Definition of the DELEGATE used in Callback on message reception
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+PUBLIC DELEGATE CommClientMessageHandler(sender AS System.Object, e AS CommClientMessageArgs) AS VOID
+
+
+	END NAMESPACE
