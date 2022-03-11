@@ -11,7 +11,7 @@ USING System.Threading.Tasks
 USING System.Windows.Forms
 USING XanthiCommLib
 
-BEGIN NAMESPACE XanthiServerTest
+BEGIN NAMESPACE XanthiDBFServerTest
 
  PUBLIC PARTIAL CLASS MainWindow ;
         INHERIT System.Windows.Forms.Form

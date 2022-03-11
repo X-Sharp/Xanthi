@@ -257,15 +257,15 @@ BEGIN NAMESPACE XanthiCommLib
 			END TRY
 			RETURN reply
 		
-		PUBLIC METHOD GetDataSession( id AS UINT64 ) AS ServerDataSession
+		PUBLIC METHOD GetDataSession( id AS INT ) AS ServerDataSession
 			RETURN SELF:Server:GetDataSession( id )
 		
 		PUBLIC METHOD AddDataSession( session AS ServerDataSession ) AS VOID
 			SELF:Server:AddDataSession( session )
 			RETURN
 		
-		PUBLIC METHOD DelDataSession( id AS UINT64 ) AS VOID
-			SELF:Server:DelDataSession( id )
+		PUBLIC METHOD RemoveDataSession( id AS INT ) AS VOID
+			SELF:Server:RemoveDataSession( id )
 			RETURN
 		
 	END CLASS

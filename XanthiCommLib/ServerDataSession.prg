@@ -16,18 +16,17 @@ BEGIN NAMESPACE XanthiCommLib
 	/// <summary>
 	/// The ServerDataSession class.
 	/// </summary>
-	CLASS ServerDataSession
+	CLASS ServerDataSession INHERIT DataSession
 		
-	STATIC PRIVATE _autoSessionID := 0 AS UINT64
 		
-		PROPERTY Id AS UINT64 AUTO
-		PROPERTY UserName AS STRING AUTO
-		PROPERTY WorkArea AS INT AUTO
-		PROPERTY Works AS Workareas AUTO
-		
-		CONSTRUCTOR()
-			SELF:Id := ++ServerDataSession._autoSessionID
+		CONSTRUCTOR( name AS STRING )
+			SUPER( name )
+
 			RETURN
 		
+		PROTECTED NEW STATIC METHOD OnTimer(source AS OBJECT, e AS System.Timers.ElapsedEventArgs) AS VOID
+			// Catch the Timer to keep the DataSession alive through Threads
+
+
 	END CLASS
 END NAMESPACE // XanthiCommLib

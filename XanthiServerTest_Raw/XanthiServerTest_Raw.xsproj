@@ -2,18 +2,18 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
   <PropertyGroup>
-    <Name>XanthiClientTest_Rdd</Name>
-    <ProjectGuid>d426fd2f-3c0a-4555-b3ca-0f1f578e4c45</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <Name>XanthiDBFServerTest</Name>
+    <ProjectGuid>{23a2c6fb-428e-4ac2-a59a-4364285601b9}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XanthiClientTest_Rdd</RootNamespace>
-    <AssemblyName>XanthiClientTest_Rdd</AssemblyName>
+    <RootNamespace>XanthiServerTest_Raw</RootNamespace>
+    <AssemblyName>XanthiServerTest_Raw</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>Core</Dialect>
     <vo15>false</vo15>
-    <OutputName>XanthiClientTest_Rdd</OutputName>
+    <OutputName>XanthiServerTest</OutputName>
     <XSharpProjectversion>2.11.0.1</XSharpProjectversion>
     <StartupObject />
   </PropertyGroup>
@@ -85,12 +85,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandValue.prg" />
     <Compile Include="Program.prg">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.prg">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.prg">
+      <DependentUpon>MainWindow.prg</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.prg">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ServerProcess.prg" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -104,14 +112,14 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.prg</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\XanthiCommLib\XanthiCommLib.xsproj">
       <Name>XanthiCommLib</Name>
       <Project>{e18c2d95-9164-487c-aedf-8d58ec529c1f}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XanthiRDD\XanthiRDD.xsproj">
-      <Name>XanthiRDD</Name>
-      <Project>{64a955dc-723d-4cf0-bcc0-115d6f97eb89}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

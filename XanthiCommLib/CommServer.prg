@@ -35,7 +35,7 @@ BEGIN NAMESPACE XanthiCommLib
 		// running Clients
 		PRIVATE clients AS List<CommServerClient>
 		// opened DataSessions
-		PRIVATE dataSessions AS Dictionary<UINT64,ServerDataSession>
+		PRIVATE dataSessions AS Dictionary<INT,ServerDataSession>
 		
 		// CallBack ?
 		PUBLIC EVENT OnClientAccept AS EventHandler<CommServerEventArgs>
@@ -126,7 +126,7 @@ BEGIN NAMESPACE XanthiCommLib
 				SELF:listener := TcpListener{SELF:ep}
 				SELF:_isRunning := FALSE
 				SELF:accessSessionsMutex := Mutex{}
-				SELF:dataSessions := Dictionary<UINT64,ServerDataSession>{}
+				SELF:dataSessions := Dictionary<INT,ServerDataSession>{}
 			CATCH e AS Exception
 				XanthiLog.Logger:Error("CommServer : InitServer, " + e.Message)
 			END TRY
@@ -275,7 +275,7 @@ BEGIN NAMESPACE XanthiCommLib
 		/// </summary>
 		/// <param name="id">The Id of the Session to retrieve</param>
 		/// <returns></returns>
-		PUBLIC METHOD GetDataSession( id AS UINT64 ) AS ServerDataSession
+		PUBLIC METHOD GetDataSession( id AS INT ) AS ServerDataSession
 			LOCAL session := NULL AS ServerDataSession
 			TRY
 				BEGIN LOCK SELF:dataSessions
@@ -304,14 +304,14 @@ BEGIN NAMESPACE XanthiCommLib
 		/// Delete a Session from the list
 		/// </summary>
 		/// <param name="id"></param>
-		PUBLIC METHOD DelDataSession( id AS UINT64 ) AS VOID
+		PUBLIC METHOD RemoveDataSession( id AS INT ) AS VOID
 			TRY
 				BEGIN LOCK SELF:dataSessions
 					SELF:dataSessions:Remove( id )
 					// Todo Should we close the WorkArea ??
 				END LOCK
 			CATCH e AS Exception
-				XanthiLog.Logger:Error("CommServer : DelDataSession, " + e.Message)
+				XanthiLog.Logger:Error("CommServer : RemoveDataSession, " + e.Message)
 			END TRY
 			RETURN 
 			

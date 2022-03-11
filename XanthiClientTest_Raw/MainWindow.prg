@@ -10,7 +10,9 @@ USING System.Threading.Tasks
 
 USING System.Windows.Forms
 USING XanthiCommLib
-USING XanthiRDD
+
+USING XanthiTest
+
 
 BEGIN NAMESPACE XanthiClientTest_Raw
 
@@ -29,7 +31,7 @@ BEGIN NAMESPACE XanthiClientTest_Raw
 			//
 			msg := XanthiCommLib.Message{}
 			int32.TryParse( SELF:tbSessionID:Text, OUT number )
-			msg:SessionID := (UINT64)number
+			msg:SessionID := number
 			IF Enum.TryParse(SELF:comboCommand:Text, OUT cmd )
 				msg:Command := cmd
 			ENDIF
@@ -82,7 +84,7 @@ BEGIN NAMESPACE XanthiClientTest_Raw
 			//
 			SELF:statusLabel:Text := ""
 			//
-			VAR commands := Enum.GetValues(TYPEOF(XanthiRDD.CommandValue))
+			VAR commands := Enum.GetValues(TYPEOF(CommandValue))
 			FOREACH VAR cmd IN commands
 				SELF:comboCommand:Items:Add( cmd:ToString() )
 			NEXT
@@ -102,7 +104,7 @@ BEGIN NAMESPACE XanthiClientTest_Raw
 			IF howMany > 1
 				msg := XanthiCommLib.Message{}
 				int32.TryParse( SELF:tbSessionID:Text, OUT number )
-				msg:SessionID := (UINT64)number
+				msg:SessionID := number
 				IF Enum.TryParse(SELF:comboCommand:Text, OUT cmd )
 					msg:Command := cmd
 				ENDIF

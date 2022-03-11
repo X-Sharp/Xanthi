@@ -53,7 +53,7 @@ BEGIN NAMESPACE XanthiCommLib
 		/// <summary>
 		/// The Session ID for this message
 		/// </summary>
-		PROPERTY SessionID AS UINT64 AUTO
+		PROPERTY SessionID AS INT AUTO
 
 		/// <summary>
 		/// The Command send by the message (One of the Command Value)

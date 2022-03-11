@@ -9,7 +9,7 @@
 //     the code is regenerated.
 //  </auto-generated>
 //------------------------------------------------------------------------------
-BEGIN NAMESPACE XanthiServerTest
+BEGIN NAMESPACE XanthiDBFServerTest
 
     PUBLIC PARTIAL CLASS MainWindow
         PRIVATE groupBox1 AS System.Windows.Forms.GroupBox

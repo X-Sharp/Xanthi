@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XanthiClientTest_Raw", "XanthiClientTest_Raw\XanthiClientTest_Raw.xsproj", "{A318B603-89BD-4E7D-86BD-A02259D82544}"
-EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XanthiCommLib", "XanthiCommLib\XanthiCommLib.xsproj", "{E18C2D95-9164-487C-AEDF-8D58EC529C1F}"
 EndProject
-Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XanthiServerTest", "XanthiServerTest\XanthiServerTest.xsproj", "{6AFBF951-0BB0-424B-BA5A-1047FB660880}"
+Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XanthiDBFServerTest", "XanthiDBFServerTest\XanthiDBFServerTest.xsproj", "{6AFBF951-0BB0-424B-BA5A-1047FB660880}"
 EndProject
 Project("{AA6C8D78-22FF-423A-9C7C-5F2393824E04}") = "XanthiClientTest_Rdd", "XanthiClientTest_Rdd\XanthiClientTest_Rdd.xsproj", "{D426FD2F-3C0A-4555-B3CA-0F1F578E4C45}"
 EndProject
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A318B603-89BD-4E7D-86BD-A02259D82544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A318B603-89BD-4E7D-86BD-A02259D82544}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A318B603-89BD-4E7D-86BD-A02259D82544}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A318B603-89BD-4E7D-86BD-A02259D82544}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E18C2D95-9164-487C-AEDF-8D58EC529C1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E18C2D95-9164-487C-AEDF-8D58EC529C1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E18C2D95-9164-487C-AEDF-8D58EC529C1F}.Release|Any CPU.ActiveCfg = Release|Any CPU

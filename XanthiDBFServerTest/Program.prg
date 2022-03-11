@@ -4,9 +4,9 @@ USING System.Linq
 USING System.Text
 USING System.Windows.Forms
 
-USING XanthiServerTest
+USING XanthiDBFServerTest
 
-BEGIN NAMESPACE XanthiServerTest
+BEGIN NAMESPACE XanthiDBFServerTest
 
 [STAThread] ;
 	FUNCTION Start() AS VOID

@@ -33,7 +33,7 @@ BEGIN NAMESPACE XanthiCommLib
 
 		// The Connection on Client side is linked to the SessionID on Server Side
 		// Good Idea ?
-		PROPERTY SessionID AS UINT64 AUTO GET PRIVATE SET
+		PROPERTY SessionID AS INT AUTO GET PRIVATE SET
 
 		CONSTRUCTOR( server AS ServerInfo )
 			SELF:_client := CommClient{ server:Address, server:Port  }
