@@ -49,7 +49,7 @@ BEGIN NAMESPACE XanthiServerTest_Raw
 				IF dataSession != NULL 
 					// Set the DataSession for all commands
 					RuntimeState.SetDataSession( dataSession )
-					VAR oRdd := dataSession:CurrentWorkarea
+					//VAR oRdd := dataSession:CurrentWorkarea
 					// Indicate what Session we processed
 					reply:SessionID := msg:SessionID
 					reply:Command := msg:Command

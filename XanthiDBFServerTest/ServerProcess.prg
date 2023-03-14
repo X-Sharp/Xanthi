@@ -1,7 +1,7 @@
 ﻿// CommServerClient_Process.prg
 // Created by    : fabri
 // Creation Date : 9/16/2021 10:37:08 AM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABXPS
 
 
@@ -25,8 +25,8 @@ BEGIN NAMESPACE XanthiDBFServerTest
 	/// The ServerProcess class.
 	/// This is where we will handle the message
 	/// </summary>
-	CLASS ServerProcess 
-		
+	CLASS ServerProcess
+
 		PUBLIC METHOD OnMessageProcess(sender AS System.Object, e AS CommClientMessageArgs) AS VOID
 			LOCAL reply AS Message
 			LOCAL msg AS Message
@@ -36,7 +36,7 @@ BEGIN NAMESPACE XanthiDBFServerTest
 			msg := e:Message
 			// The Comm Server
 			server := e:Client:Server
-            
+
 			// Default Reply
 			reply := Message{}
 			reply.Command := msg:Command
@@ -47,7 +47,7 @@ BEGIN NAMESPACE XanthiDBFServerTest
 			IF ( msg:Command >= ConnectionCommand.OpenSession ) .AND. ( msg:Command <= ConnectionCommand.CheckSession )
 				reply := SELF:ProcessConnectionCommand( dataSession, e )
 			ELSE
-				IF dataSession != NULL 
+				IF dataSession != NULL
 					// Set the DataSession for all commands
 					RuntimeState.SetDataSession( dataSession )
 					VAR oRdd := dataSession:CurrentWorkarea
@@ -68,7 +68,7 @@ BEGIN NAMESPACE XanthiDBFServerTest
 						CASE CommandValue.Close
 							// Closing file
 							oRdd:Close()
-							// 
+							//
 							reply:Code := CodeValue.Ok
 						CASE CommandValue.GoTo
 							IF oRdd:Goto( msg:Code )
@@ -129,8 +129,8 @@ BEGIN NAMESPACE XanthiDBFServerTest
 			//
 			e:Message := reply
 			//
-			RETURN 
-		
+			RETURN
+
 			//		PRIVATE METHOD GetDbStruct( oRDD AS IRDD ) AS List<XRddFieldInfo>
 			//			VAR _fieldList  := List<XRddFieldInfo>{}
 			//			LOCAL f AS INT
@@ -141,7 +141,7 @@ BEGIN NAMESPACE XanthiDBFServerTest
 			//				_fieldList:Add(oInfo)
 			//			NEXT
 			//		RETURN _fieldList
-		
+
 		PRIVATE METHOD ProcessConnectionCommand( dataSession AS ServerDataSession, e AS CommClientMessageArgs ) AS Message
 			LOCAL msg AS Message
 			LOCAL server AS CommServer
@@ -153,7 +153,7 @@ BEGIN NAMESPACE XanthiDBFServerTest
 			msg := e:Message
 			// The Comm Server
 			server := e:Client:Server
-            
+
 			//
 			SWITCH msg.Command
 				CASE ConnectionCommand.OpenSession
@@ -172,7 +172,9 @@ BEGIN NAMESPACE XanthiDBFServerTest
 								//
 								reply:Code := CodeValue.Ok
 								reply:SessionID := dataSession:Id
-							ENDIF
+                            ENDIF
+                        CATCH
+                            // Error Handling
 						END TRY
 					ENDIF
 				CASE ConnectionCommand.CloseSession
@@ -182,7 +184,7 @@ BEGIN NAMESPACE XanthiDBFServerTest
 			END SWITCH
 			//
 			RETURN reply
-	
+
 		PRIVATE METHOD GetCurrentRDDState(dataSession AS ServerDataSession) AS XanthiRDDState
 			LOCAL state AS XanthiRDDState
 			LOCAL oRdd AS IRdd
@@ -207,5 +209,5 @@ BEGIN NAMESPACE XanthiDBFServerTest
 			//
 			RETURN state
 	END CLASS
-	
+
 END NAMESPACE
